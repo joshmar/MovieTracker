@@ -7,5 +7,6 @@ public class Episode
     public bool Watched { get; set; }
     public string? Description { get; set; }
     public byte? Score { get; set; }
-    public Guid[]? RoleIds { get; set; }
+    public SerieEpisode Serie { get; set; }
+    public List<RoleEpisode> RoleEpisodes { get; set; }
 }

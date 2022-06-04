@@ -10,4 +10,5 @@ public class Actor
     [Required]
     public string LastName { get; set; }
     public byte? Score { get; set; }
+    public List<RoleActor> RoleActors { get; set; }
 }
