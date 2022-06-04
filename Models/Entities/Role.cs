@@ -9,6 +9,6 @@ public class Role
     public byte? Score { get; set; }
     public List<RoleActor> RoleActors { get; set; }
     public List<RoleEpisode> RoleEpisodes { get; set; }
-    public List<RoleSerie> RoleSeries { get; set; }
+    public List<RoleSeries> RoleSeries { get; set; }
     public List<RoleMovie> RoleMovies { get; set; }
 }
