@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MovieTracker.Extension;
 using MovieTracker.Models;
 
@@ -8,21 +9,17 @@ namespace MovieTracker.Controllers;
 [Route("[controller]")]
 public class ActorController : ControllerBase
 {
-    private IEnumerable<Actor> _actor = new List<Actor>
+    private readonly MovieTrackerContext _movieTrackerContext;
+
+    public ActorController(MovieTrackerContext movieTrackerContext)
     {
-        new Actor
-        {
-            Id = Guid.NewGuid(),
-            FirstName = "Bruce",
-            LastName = "Willis",
-            Score = 9
-        }
-    };
+        _movieTrackerContext = movieTrackerContext;
+    }
     
     [HttpGet(Name = "GetActor")]
-    public IActionResult Get()
+    public async Task<IActionResult> GetAsync()
     {
-        return Ok(_actor);
+        return Ok(await _movieTrackerContext.Actors.ToListAsync());
     }
 
     [HttpPost(Name = "AddActor")]
@@ -32,7 +29,6 @@ public class ActorController : ControllerBase
         {
             return BadRequest("Invalid actor details.");
         }
-        _actor.Append(actor);
         return Ok(actor);
     }
 
