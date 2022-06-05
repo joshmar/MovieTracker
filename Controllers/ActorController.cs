@@ -9,17 +9,31 @@ namespace MovieTracker.Controllers;
 [Route("[controller]")]
 public class ActorController : ControllerBase
 {
-    private readonly MovieTrackerContext _movieTrackerContext;
+    private readonly MovieTrackerContext _context;
 
-    public ActorController(MovieTrackerContext movieTrackerContext)
+    public ActorController(MovieTrackerContext context)
     {
-        _movieTrackerContext = movieTrackerContext;
+        _context = context;
     }
     
     [HttpGet(Name = "GetActor")]
     public async Task<IActionResult> GetAsync()
     {
-        return Ok(await _movieTrackerContext.Actors.ToListAsync());
+        var actor = _context.Actors.First();
+        var roles = await _context.Roles
+            .SelectMany(role => role.RoleActors
+                .Where(roleActor => roleActor.ActorId == actor.Id)
+                .Select(x => x.Role))
+            .FirstAsync();
+        var movies = await _context.Movies
+            .SelectMany(movie => movie.RoleMovies
+                .Where(roleMovie => roleMovie.RoleId == roles.Id)
+                .Select(roleMovie => roleMovie.Movie))
+            .FirstAsync();
+        
+        var returnObject = new { actor = actor.FirstName + actor.LastName, roles = roles.Name, movie = movies.Title};
+
+        return Ok(returnObject);
     }
 
     [HttpPost(Name = "AddActor")]
