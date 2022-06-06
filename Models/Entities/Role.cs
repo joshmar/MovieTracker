@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace MovieTracker.Models;
+﻿namespace MovieTracker.Models.Entities;
 
 public class Role
 {

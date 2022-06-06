@@ -1,4 +1,4 @@
-﻿namespace MovieTracker.Models;
+﻿namespace MovieTracker.Models.Entities;
 
 public class Actor
 {

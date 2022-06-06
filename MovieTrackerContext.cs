@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MovieTracker.Models;
+using MovieTracker.Models.Entities;
 
 namespace MovieTracker;
 

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieTracker.Extension;
-using MovieTracker.Models;
+using MovieTracker.Models.Entities;
 
 namespace MovieTracker.Controllers;
 
