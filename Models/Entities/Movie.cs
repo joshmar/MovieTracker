@@ -10,4 +10,14 @@ public class Movie
     
     //Relationships
     public virtual ICollection<Role>? Roles { get; set; }
+
+    public Movie(string title, bool watched, string? description = null, byte? score = null, ICollection<Role>? roles = null)
+    {
+        Id = Guid.NewGuid();
+        Title = title;
+        Watched = watched;
+        Description = description;
+        Score = score;
+        Roles = roles;
+    }
 }

@@ -19,4 +19,40 @@ public class Role
     
     public Guid? SeriesId { get; set; }
     public Series? Series { get; set; }
+
+    public Role(string name, Actor actor, Episode episode, string? description = null, byte? score = null)
+    {
+        Id = Guid.NewGuid();
+        Name = name;
+        ActorId = actor.Id;
+        Actor = actor;
+        Description = description;
+        Score = score;
+        Episode = episode;
+        EpisodeId = episode.Id;
+    }
+    
+    public Role(string name, Actor actor, Movie movie, string? description = null, byte? score = null)
+    {
+        Id = Guid.NewGuid();
+        Name = name;
+        ActorId = actor.Id;
+        Actor = actor;
+        Description = description;
+        Score = score;
+        Movie = movie;
+        MovieId = movie.Id;
+    }
+    
+    public Role(string name, Actor actor, Series series, string? description = null, byte? score = null)
+    {
+        Id = Guid.NewGuid();
+        Name = name;
+        ActorId = actor.Id;
+        Actor = actor;
+        Description = description;
+        Score = score;
+        Series = series;
+        SeriesId = series.Id;
+    }
 }

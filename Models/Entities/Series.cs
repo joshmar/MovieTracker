@@ -11,4 +11,15 @@ public class Series
     //Relationships
     public virtual ICollection<Episode>? Episodes { get; set; }
     public virtual ICollection<Role>? Roles { get; set; }
+
+    public Series(string title, bool watched, string? description = null, byte? score = null, ICollection<Episode>? episodes = null, ICollection<Role>? roles = null)
+    {
+        Id = Guid.NewGuid();
+        Title = title;
+        Watched = watched;
+        Description = description;
+        Score = score;
+        Episodes = episodes;
+        Roles = roles;
+    }
 }

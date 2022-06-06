@@ -12,4 +12,18 @@ public class Episode
     public Guid SeriesId { get; set; }
     public Series Series { get; set; }
     public virtual ICollection<Role>? Roles { get; set; }
+
+    public Episode(string title, bool watched, Series series, string? description = null, byte? score = null, ICollection<Role>? roles = null)
+    {
+        Id = Guid.NewGuid();
+        Title = title;
+        Watched = watched;
+        Series = series;
+        SeriesId = series.Id;
+        Description = description;
+        Score = score;
+        Roles = roles;
+    }
+    
+    
 }
