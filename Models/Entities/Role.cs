@@ -1,4 +1,6 @@
-﻿namespace MovieTracker.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MovieTracker.Models;
 
 public class Role
 {
@@ -6,8 +8,17 @@ public class Role
     public string Name { get; set; }
     public string? Description { get; set; }
     public byte? Score { get; set; }
-    public List<RoleActor> RoleActors { get; set; }
-    public List<RoleEpisode> RoleEpisodes { get; set; }
-    public List<RoleSeries> RoleSeries { get; set; }
-    public List<RoleMovie> RoleMovies { get; set; }
+    
+    //Relationships
+    public Guid ActorId { get; set; }
+    public Actor Actor { get; set; }
+    
+    public Guid? EpisodeId { get; set; }
+    public Episode? Episode { get; set; }
+    
+    public Guid? MovieId { get; set; }
+    public Movie? Movie { get; set; }
+    
+    public Guid? SeriesId { get; set; }
+    public Series? Series { get; set; }
 }

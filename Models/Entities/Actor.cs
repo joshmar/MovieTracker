@@ -6,5 +6,7 @@ public class Actor
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public byte? Score { get; set; }
-    public List<RoleActor> RoleActors { get; set; }
+    
+    //Relationships
+    public virtual ICollection<Role>? Roles { get; set; }
 }

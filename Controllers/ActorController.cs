@@ -19,19 +19,13 @@ public class ActorController : ControllerBase
     [HttpGet(Name = "GetActor")]
     public async Task<IActionResult> GetAsync()
     {
-        var actor = _context.Actors.First();
-        var roles = await _context.Roles
-            .SelectMany(role => role.RoleActors
-                .Where(roleActor => roleActor.ActorId == actor.Id)
-                .Select(x => x.Role))
-            .FirstAsync();
-        var movies = await _context.Movies
-            .SelectMany(movie => movie.RoleMovies
-                .Where(roleMovie => roleMovie.RoleId == roles.Id)
-                .Select(roleMovie => roleMovie.Movie))
-            .FirstAsync();
+        var actor = await _context.Actors.FirstAsync();
         
-        var returnObject = new { actor = actor.FirstName + actor.LastName, roles = roles.Name, movie = movies.Title};
+        var returnObject = new { 
+            actor = actor.FirstName + actor.LastName, 
+            roles = actor.Roles?.First(), 
+            movie = actor.Roles?.First().Movie?.Title
+        };
 
         return Ok(returnObject);
     }

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "IUwzEGPs1AZ5MxJit1/yO8/xl8ZXDvA6zM/BolEnDCa74/jSIyfG5cge/uqfLQiii2MfPgAM0sNeZzt+beXQrg==",
+  "dgSpecHash": "tmuztWDt86E9gkhbuhQa4pKeAsPudRIrolsYxjToDYRTS75pEAAzzDW+BIJZdfIutendanNUHq7iIj+vYHvkyQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Joshmar\\RiderProjects\\MovieTracker\\MovieTracker.csproj",
   "expectedPackageFiles": [
@@ -12,7 +12,7 @@
     "C:\\Users\\Joshmar\\.nuget\\packages\\graphql.newtonsoftjson\\4.6.1\\graphql.newtonsoftjson.4.6.1.nupkg.sha512",
     "C:\\Users\\Joshmar\\.nuget\\packages\\graphql.server.authorization.aspnetcore\\6.1.0\\graphql.server.authorization.aspnetcore.6.1.0.nupkg.sha512",
     "C:\\Users\\Joshmar\\.nuget\\packages\\graphql.server.core\\5.2.1\\graphql.server.core.5.2.1.nupkg.sha512",
-    "C:\\Users\\Joshmar\\.nuget\\packages\\graphql.server.transports.aspnetcore\\5.2.1\\graphql.server.transports.aspnetcore.5.2.1.nupkg.sha512",
+    "C:\\Users\\Joshmar\\.nuget\\packages\\graphql.server.transports.aspnetcore\\6.1.0\\graphql.server.transports.aspnetcore.6.1.0.nupkg.sha512",
     "C:\\Users\\Joshmar\\.nuget\\packages\\graphql.server.transports.aspnetcore.systemtextjson\\5.2.1\\graphql.server.transports.aspnetcore.systemtextjson.5.2.1.nupkg.sha512",
     "C:\\Users\\Joshmar\\.nuget\\packages\\graphql.server.transports.subscriptions.abstractions\\5.2.1\\graphql.server.transports.subscriptions.abstractions.5.2.1.nupkg.sha512",
     "C:\\Users\\Joshmar\\.nuget\\packages\\graphql.server.ui.altair\\6.1.0\\graphql.server.ui.altair.6.1.0.nupkg.sha512",

@@ -7,5 +7,7 @@ public class Movie
     public bool Watched { get; set; }
     public string? Description { get; set; }
     public byte? Score { get; set; }
-    public List<RoleMovie> RoleMovies { get; set; }
+    
+    //Relationships
+    public virtual ICollection<Role>? Roles { get; set; }
 }

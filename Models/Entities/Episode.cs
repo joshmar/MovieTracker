@@ -7,6 +7,9 @@ public class Episode
     public bool Watched { get; set; }
     public string? Description { get; set; }
     public byte? Score { get; set; }
-    public SeriesEpisode SeriesEpisode { get; set; }
-    public List<RoleEpisode> RoleEpisodes { get; set; }
+    
+    //Relationships
+    public Guid SeriesId { get; set; }
+    public Series Series { get; set; }
+    public virtual ICollection<Role>? Roles { get; set; }
 }

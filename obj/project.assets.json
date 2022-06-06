@@ -112,10 +112,10 @@
           "lib/netstandard2.0/GraphQL.Server.Core.dll": {}
         }
       },
-      "GraphQL.Server.Transports.AspNetCore/5.2.1": {
+      "GraphQL.Server.Transports.AspNetCore/6.1.0": {
         "type": "package",
         "dependencies": {
-          "GraphQL.Server.Core": "5.2.1"
+          "GraphQL": "5.3.0"
         },
         "compile": {
           "lib/net6.0/GraphQL.Server.Transports.AspNetCore.dll": {}
@@ -1430,15 +1430,15 @@
         "logo.64x64.png"
       ]
     },
-    "GraphQL.Server.Transports.AspNetCore/5.2.1": {
-      "sha512": "52GnNeyAXs7gsLIDl4A2t3k67GzDyVDMjk61a7/QWx3bleWE1tTysr5XTQU7kHhU57VgK7odT7NkYKb7PdCTxQ==",
+    "GraphQL.Server.Transports.AspNetCore/6.1.0": {
+      "sha512": "d3vW1dVLPG+tHLVlxJG7Nk6HDievqZ9X41BRv6Qa7m/3BYsmnb0NyuabTUp5qGIyN4DmGxVnXlsn1izJI4+W6Q==",
       "type": "package",
-      "path": "graphql.server.transports.aspnetcore/5.2.1",
+      "path": "graphql.server.transports.aspnetcore/6.1.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "README.md",
-        "graphql.server.transports.aspnetcore.5.2.1.nupkg.sha512",
+        "graphql.server.transports.aspnetcore.6.1.0.nupkg.sha512",
         "graphql.server.transports.aspnetcore.nuspec",
         "lib/net5.0/GraphQL.Server.Transports.AspNetCore.dll",
         "lib/net5.0/GraphQL.Server.Transports.AspNetCore.xml",
@@ -4279,6 +4279,7 @@
       "GraphQL.Conventions >= 4.3.0",
       "GraphQL.MicrosoftDI >= 5.3.0",
       "GraphQL.Server.Authorization.AspNetCore >= 6.1.0",
+      "GraphQL.Server.Transports.AspNetCore >= 6.1.0",
       "GraphQL.Server.Transports.AspNetCore.SystemTextJson >= 5.2.1",
       "GraphQL.Server.Ui.Altair >= 6.1.0",
       "GraphQL.SystemTextJson >= 5.3.0",
@@ -4346,6 +4347,10 @@
             "version": "[5.3.0, )"
           },
           "GraphQL.Server.Authorization.AspNetCore": {
+            "target": "Package",
+            "version": "[6.1.0, )"
+          },
+          "GraphQL.Server.Transports.AspNetCore": {
             "target": "Package",
             "version": "[6.1.0, )"
           },

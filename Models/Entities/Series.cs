@@ -7,6 +7,8 @@ public class Series
     public bool Watched { get; set; }
     public string? Description { get; set; }
     public byte? Score { get; set; }
-    public List<SeriesEpisode> SeriesEpisodes { get; set; }
-    public List<RoleSeries> RoleSeries { get; set; }
+    
+    //Relationships
+    public virtual ICollection<Episode>? Episodes { get; set; }
+    public virtual ICollection<Role>? Roles { get; set; }
 }

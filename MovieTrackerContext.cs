@@ -16,74 +16,36 @@ public class MovieTrackerContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        //Many to many role - actor mapping
-        modelBuilder.Entity<RoleActor>()
-            .HasKey(roleActor => new { roleActor.ActorId, roleActor.RoleId });
+        modelBuilder.Entity<Role>()
+            .HasOne<Actor>(role => role.Actor)
+            .WithMany(actor => actor.Roles)
+            .HasForeignKey(role => role.ActorId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired();
 
-        modelBuilder.Entity<RoleActor>()
-            .HasOne(roleActor => roleActor.Actor)
-            .WithMany(actor => actor.RoleActors)
-            .HasForeignKey(roleActor => roleActor.ActorId);
-        
-        modelBuilder.Entity<RoleActor>()
-            .HasOne(roleActor => roleActor.Role)
-            .WithMany(role => role.RoleActors)
-            .HasForeignKey(roleActor => roleActor.RoleId);
-        
-        //Many to many role - episode mapping
-        modelBuilder.Entity<RoleEpisode>()
-            .HasKey(roleEpisode => new { roleEpisode.EpisodeId, roleEpisode.RoleId });
+        modelBuilder.Entity<Role>()
+            .HasOne<Series>(role => role.Series)
+            .WithMany(series => series.Roles)
+            .HasForeignKey(role => role.SeriesId)
+            .OnDelete(DeleteBehavior.NoAction);
 
-        modelBuilder.Entity<RoleEpisode>()
-            .HasOne(roleEpisode => roleEpisode.Episode)
-            .WithMany(episode => episode.RoleEpisodes)
-            .HasForeignKey(roleEpisode => roleEpisode.EpisodeId);
-        
-        modelBuilder.Entity<RoleEpisode>()
-            .HasOne(roleEpisode => roleEpisode.Role)
-            .WithMany(role => role.RoleEpisodes)
-            .HasForeignKey(roleEpisode => roleEpisode.RoleId);
-        
-        //Many to many role - movie mapping
-        modelBuilder.Entity<RoleMovie>()
-            .HasKey(roleMovie => new { roleMovie.MovieId, roleMovie.RoleId });
+        modelBuilder.Entity<Role>()
+            .HasOne<Movie>(role => role.Movie)
+            .WithMany(movie => movie.Roles)
+            .HasForeignKey(role => role.MovieId)
+            .OnDelete(DeleteBehavior.NoAction);
 
-        modelBuilder.Entity<RoleMovie>()
-            .HasOne(roleMovie => roleMovie.Movie)
-            .WithMany(movie => movie.RoleMovies)
-            .HasForeignKey(roleMovie => roleMovie.MovieId);
-        
-        modelBuilder.Entity<RoleMovie>()
-            .HasOne(roleMovie => roleMovie.Role)
-            .WithMany(role => role.RoleMovies)
-            .HasForeignKey(roleMovie => roleMovie.RoleId);
-        
-        //Many to many role - series mapping
-        modelBuilder.Entity<RoleSeries>()
-            .HasKey(roleSeries => new { roleSeries.SeriesId, roleSeries.RoleId });
+        modelBuilder.Entity<Role>()
+            .HasOne<Episode>(role => role.Episode)
+            .WithMany(episode => episode.Roles)
+            .HasForeignKey(role => role.EpisodeId)
+            .OnDelete(DeleteBehavior.NoAction);
 
-        modelBuilder.Entity<RoleSeries>()
-            .HasOne(roleSeries => roleSeries.Series)
-            .WithMany(series => series.RoleSeries)
-            .HasForeignKey(roleSeries => roleSeries.SeriesId);
-        
-        modelBuilder.Entity<RoleSeries>()
-            .HasOne(roleSeries => roleSeries.Role)
-            .WithMany(role => role.RoleSeries)
-            .HasForeignKey(roleSeries => roleSeries.RoleId);
-        
-        //one to Many series - episode mapping
-        modelBuilder.Entity<SeriesEpisode>()
-            .HasKey(seriesEpisode => new { seriesEpisode.SeriesId, seriesEpisode.EpisodeId });
-
-        modelBuilder.Entity<SeriesEpisode>()
-            .HasOne(seriesEpisode => seriesEpisode.Series)
-            .WithMany(series => series.SeriesEpisodes)
-            .HasForeignKey(seriesEpisode => seriesEpisode.SeriesId);
-        
-        modelBuilder.Entity<SeriesEpisode>()
-            .HasOne(seriesEpisode => seriesEpisode.Episode)
-            .WithOne(episode => episode.SeriesEpisode)
-            .HasForeignKey<SeriesEpisode>(episode => episode.EpisodeId);
+        modelBuilder.Entity<Episode>()
+            .HasOne<Series>(episode => episode.Series)
+            .WithMany(series => series.Episodes)
+            .HasForeignKey(episode => episode.SeriesId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired();
     }
 }
