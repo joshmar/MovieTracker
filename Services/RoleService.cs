@@ -27,9 +27,6 @@ public class RoleService : IRoleService
             yield return await GetByIdAsync(id);
         }
     }
-    
-    public Role? GetById(Guid id) =>
-        _context.Roles.Find(id);
 
     public async Task<Role?> CreateAsync(Role toCreate)
     {
@@ -65,6 +62,18 @@ public class RoleService : IRoleService
 
         return true;
     }
+    
+    public async Task<List<Role>> GetByActorIdAsync(Guid actorId) => 
+        await _context.Roles.Where(role => role.ActorId == actorId).ToListAsync();
+
+    public async Task<List<Role>> GetByEpisodeIdAsync(Guid episodeId) => 
+        await _context.Roles.Where(role => role.EpisodeId == episodeId).ToListAsync();
+
+    public async Task<List<Role>> GetByMovieIdAsync(Guid movieId) => 
+        await _context.Roles.Where(role => role.MovieId == movieId).ToListAsync();
+
+    public async Task<List<Role>> GetBySeriesIdAsync(Guid seriesId) => 
+        await _context.Roles.Where(role => role.SeriesId == seriesId).ToListAsync();
 
     private static bool IsValid(Role role)
     {

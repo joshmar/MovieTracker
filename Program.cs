@@ -1,4 +1,5 @@
 using GraphQL;
+using GraphQL.DataLoader;
 using GraphQL.MicrosoftDI;
 using GraphQL.Server;
 using GraphQL.SystemTextJson;
@@ -55,6 +56,7 @@ builder.Services.AddGraphQL(gqlBuilder => gqlBuilder
     .AddErrorInfoProvider(opt => 
         opt.ExposeExceptionStackTrace = builder.Environment.IsDevelopment())
     .AddWebSockets()
+    .AddDataLoader()
     .AddGraphTypes()
 );
 
