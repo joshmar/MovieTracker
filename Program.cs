@@ -1,11 +1,16 @@
 using GraphQL;
-using GraphQL.DataLoader;
+using GraphQL.DataLoader;using GraphQL.DI;
 using GraphQL.MicrosoftDI;
 using GraphQL.Server;
 using GraphQL.SystemTextJson;
+using GraphQL.Types;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using MovieTracker;
+using MovieTracker.Extensions;
+using MovieTracker.GQL.Queries;
 using MovieTracker.GQL.Schemas;
+using MovieTracker.Models.Entities;
 using MovieTracker.Services;
 using MovieTracker.Services.Interfaces;
 
@@ -37,36 +42,9 @@ builder.Services
 builder.Services.AddScoped<IServiceProvider>(provider => 
     new FuncServiceProvider(provider.GetRequiredService));
 
-builder.Services.AddScoped<ActorSchema>();
-builder.Services.AddScoped<EpisodeSchema>();
-builder.Services.AddScoped<MovieSchema>();
-builder.Services.AddScoped<RoleSchema>();
-builder.Services.AddScoped<SeriesSchema>();
+builder.Services.AddScoped<CoreSchema>();
 
-builder.Services.AddGraphQL(gqlBuilder => gqlBuilder
-    .ConfigureExecutionOptions(options =>
-    {
-        options.EnableMetrics = builder.Environment.IsDevelopment();
-        var logger = options.RequestServices?.GetRequiredService<ILogger<Program>>();
-        options.UnhandledExceptionDelegate = ctx =>
-        {
-            logger?.LogError("{Error} occurred", ctx.OriginalException.Message);
-            return Task.CompletedTask;
-        };
-    })
-    .AddHttpMiddleware<ActorSchema>()
-    .AddHttpMiddleware<EpisodeSchema>()
-    .AddHttpMiddleware<MovieSchema>()
-    .AddHttpMiddleware<RoleSchema>()
-    .AddHttpMiddleware<SeriesSchema>()
-    .AddDefaultEndpointSelectorPolicy()
-    .AddSystemTextJson()
-    .AddErrorInfoProvider(opt => 
-        opt.ExposeExceptionStackTrace = builder.Environment.IsDevelopment())
-    .AddWebSockets()
-    .AddDataLoader()
-    .AddGraphTypes()
-);
+builder.Services.AddGraphQL(gqlBuilder => gqlBuilder.BuildGqlService<CoreSchema>(builder.Environment.IsDevelopment()));
 
 var app = builder.Build();
 
@@ -86,11 +64,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseGraphQL<ActorSchema>();
-app.UseGraphQL<EpisodeSchema>();
-app.UseGraphQL<MovieSchema>();
-app.UseGraphQL<RoleSchema>();
-app.UseGraphQL<SeriesSchema>();
+app.UseGraphQL<CoreSchema>();
 
 app.UseGraphQLAltair();
 
