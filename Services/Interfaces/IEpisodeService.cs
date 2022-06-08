@@ -4,5 +4,5 @@ namespace MovieTracker.Services.Interfaces;
 
 public interface IEpisodeService : ICrudMethods<Episode>
 {
-    public Task<IEnumerable<Episode>> GetEpisodeBySeriesIdAsync(Guid id, CancellationToken cancellationToken = default);
+    public Task<IEnumerable<Episode>> GetBySeriesIdAsync(Guid id, CancellationToken cancellationToken = default);
 }

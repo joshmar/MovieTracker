@@ -63,7 +63,7 @@ public class EpisodeService : IEpisodeService
         return true;
     }
 
-    public async Task<IEnumerable<Episode>> GetEpisodeBySeriesIdAsync(Guid id, CancellationToken cancellationToken) =>
+    public async Task<IEnumerable<Episode>> GetBySeriesIdAsync(Guid id, CancellationToken cancellationToken) =>
         await _context.Episodes.Where(episode => episode.SeriesId == id).ToListAsync(cancellationToken);
 
     private static bool IsValid(Episode episode) =>
