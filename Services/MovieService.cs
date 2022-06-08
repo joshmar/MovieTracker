@@ -17,14 +17,13 @@ public class MovieService : IMovieService
     public async Task<List<Movie>> GetAllAsync() =>
         await _context.Movies.ToListAsync();
 
-    public List<Movie> GetAll() =>
-        _context.Movies.ToList();
+    public Task<List<Movie?>> GetByIdsAsync(IEnumerable<Guid> id)
+    {
+        throw new NotImplementedException();
+    }
 
     public async Task<Movie?> GetByIdAsync(Guid id) =>
         await _context.Movies.FindAsync(id);
-
-    public Movie? GetById(Guid id) =>
-        _context.Movies.Find(id);
 
     public async Task<Movie?> CreateAsync(Movie toCreate)
     {
@@ -36,20 +35,7 @@ public class MovieService : IMovieService
         await _context.Movies.AddAsync(toCreate);
         await _context.SaveChangesAsync();
         
-        return await GetByIdAsync(toCreate.Id);
-    }
-
-    public Movie? Create(Movie toCreate)
-    {
-        if (!IsValid(toCreate))
-        {
-            return null;
-        }
-
-        _context.Movies.Add(toCreate);
-        _context.SaveChanges();
-        
-        return GetById(toCreate.Id);
+        return toCreate;
     }
 
     public async Task<bool> UpdateAsync(Movie toUpdate)
@@ -62,16 +48,6 @@ public class MovieService : IMovieService
         return true;
     }
 
-    public bool Update(Movie toUpdate)
-    {
-        if (GetById(toUpdate.Id) == null || !IsValid(toUpdate)) 
-            return false;
-        
-        _context.Movies.Update(toUpdate);
-        _context.SaveChanges();
-        return true;
-    }
-
     public async Task<bool> DeleteAsync(Guid id)
     {
         var toDelete = await GetByIdAsync(id);
@@ -80,18 +56,6 @@ public class MovieService : IMovieService
 
         _context.Movies.Remove(toDelete);
         await _context.SaveChangesAsync();
-
-        return true;
-    }
-
-    public bool Delete(Guid id)
-    {
-        var toDelete = GetById(id);
-        if (toDelete == null)
-            return false;
-
-        _context.Movies.Remove(toDelete);
-        _context.SaveChanges();
 
         return true;
     }

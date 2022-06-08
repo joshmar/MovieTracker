@@ -17,8 +17,10 @@ public class RoleService : IRoleService
     public async Task<List<Role>> GetAllAsync() =>
         await _context.Roles.ToListAsync();
 
-    public List<Role> GetAll() =>
-        _context.Roles.ToList();
+    public Task<List<Role?>> GetByIdsAsync(IEnumerable<Guid> id)
+    {
+        throw new NotImplementedException();
+    }
 
     public async Task<Role?> GetByIdAsync(Guid id) =>
         await _context.Roles.FindAsync(id);
@@ -39,19 +41,6 @@ public class RoleService : IRoleService
         return await GetByIdAsync(toCreate.Id);
     }
 
-    public Role? Create(Role toCreate)
-    {
-        if (!IsValid(toCreate))
-        {
-            return null;
-        }
-
-        _context.Roles.Add(toCreate);
-        _context.SaveChanges();
-        
-        return GetById(toCreate.Id);
-    }
-
     public async Task<bool> UpdateAsync(Role toUpdate)
     {
         if (await GetByIdAsync(toUpdate.Id) == null || !IsValid(toUpdate)) 
@@ -59,16 +48,6 @@ public class RoleService : IRoleService
         
         _context.Roles.Update(toUpdate);
         await _context.SaveChangesAsync();
-        return true;
-    }
-
-    public bool Update(Role toUpdate)
-    {
-        if (GetById(toUpdate.Id) == null || !IsValid(toUpdate)) 
-            return false;
-        
-        _context.Roles.Update(toUpdate);
-        _context.SaveChanges();
         return true;
     }
 
@@ -80,18 +59,6 @@ public class RoleService : IRoleService
 
         _context.Roles.Remove(toDelete);
         await _context.SaveChangesAsync();
-
-        return true;
-    }
-
-    public bool Delete(Guid id)
-    {
-        var toDelete = GetById(id);
-        if (toDelete == null)
-            return false;
-
-        _context.Roles.Remove(toDelete);
-        _context.SaveChanges();
 
         return true;
     }

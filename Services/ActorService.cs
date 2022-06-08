@@ -17,14 +17,13 @@ public class ActorService : IActorService
     public async Task<List<Actor>> GetAllAsync() => 
         await _context.Actors.ToListAsync();
 
-    public List<Actor> GetAll() => 
-        _context.Actors.ToList();
+    public Task<List<Actor?>> GetByIdsAsync(IEnumerable<Guid> id)
+    {
+        throw new NotImplementedException();
+    }
 
     public async Task<Actor?> GetByIdAsync(Guid id) => 
         await _context.Actors.FindAsync(id);
-
-    public Actor? GetById(Guid id) => 
-        _context.Actors.Find(id);
 
     public async Task<Actor?> CreateAsync(Actor toCreate)
     {
@@ -36,20 +35,7 @@ public class ActorService : IActorService
         await _context.Actors.AddAsync(toCreate);
         await _context.SaveChangesAsync();
         
-        return await GetByIdAsync(toCreate.Id);
-    }
-
-    public Actor? Create(Actor toCreate)
-    {
-        if (!IsValid(toCreate))
-        {
-            return null;
-        }
-
-        _context.Actors.Add(toCreate);
-        _context.SaveChanges();
-        
-        return GetById(toCreate.Id);
+        return toCreate;
     }
 
     public async Task<bool> UpdateAsync(Actor toUpdate)
@@ -62,16 +48,6 @@ public class ActorService : IActorService
         return true;
     }
 
-    public bool Update(Actor toUpdate)
-    {
-        if (GetById(toUpdate.Id) == null || !IsValid(toUpdate)) 
-            return false;
-        
-        _context.Actors.Update(toUpdate);
-        _context.SaveChanges();
-        return true;
-    }
-
     public async Task<bool> DeleteAsync(Guid id)
     {
         var toDelete = await GetByIdAsync(id);
@@ -80,18 +56,6 @@ public class ActorService : IActorService
 
         _context.Actors.Remove(toDelete);
         await _context.SaveChangesAsync();
-
-        return true;
-    }
-
-    public bool Delete(Guid id)
-    {
-        var toDelete = GetById(id);
-        if (toDelete == null)
-            return false;
-
-        _context.Actors.Remove(toDelete);
-        _context.SaveChanges();
 
         return true;
     }

@@ -23,5 +23,17 @@ public class Series
         Score = score;
         Episodes = episodes;
         Roles = roles;
+        
+        UpdateEpisodeWatched();
+    }
+
+    public void UpdateEpisodeWatched()
+    {
+        if (!Watched || Episodes == null) 
+            return;
+        foreach (var episode in Episodes)
+        {
+            episode.Watched = true;
+        }
     }
 }
