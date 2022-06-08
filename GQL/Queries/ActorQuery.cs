@@ -9,6 +9,6 @@ public sealed class ActorQuery : ObjectGraphType
     public ActorQuery(IActorService actorService)
     {
         FieldAsync<ListGraphType<ActorType>>("actors", 
-            resolve: async fieldContext =>  await actorService.GetAllAsync());
+            resolve: async fieldContext =>  await actorService.GetAllAsync(fieldContext.CancellationToken));
     }
 }
