@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Runtime.CompilerServices;
+using Microsoft.EntityFrameworkCore;
 using MovieTracker.Extension;
 using MovieTracker.Models.Entities;
 using MovieTracker.Services.Interfaces;
@@ -17,13 +18,16 @@ public class ActorService : IActorService
     public async Task<List<Actor>> GetAllAsync() => 
         await _context.Actors.ToListAsync();
 
-    public Task<List<Actor?>> GetByIdsAsync(IEnumerable<Guid> id)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<Actor?> GetByIdAsync(Guid id) => 
         await _context.Actors.FindAsync(id);
+    
+    public async IAsyncEnumerable<Actor?> GetByIdsAsync(IEnumerable<Guid> ids)
+    {
+        foreach (var id in ids)
+        {
+            yield return await GetByIdAsync(id);
+        }
+    }
 
     public async Task<Actor?> CreateAsync(Actor toCreate)
     {

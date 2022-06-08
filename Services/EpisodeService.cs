@@ -17,14 +17,17 @@ public class EpisodeService : IEpisodeService
     public async Task<List<Episode>> GetAllAsync() =>
         await _context.Episodes.ToListAsync();
 
-    public Task<List<Episode?>> GetByIdsAsync(IEnumerable<Guid> id)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<Episode?> GetByIdAsync(Guid id) =>
         await _context.Episodes.FindAsync(id);
 
+    public async IAsyncEnumerable<Episode?> GetByIdsAsync(IEnumerable<Guid> ids)
+    {
+        foreach (var id in ids)
+        {
+            yield return await GetByIdAsync(id);
+        }
+    }
+    
     public async Task<Episode?> CreateAsync(Episode toCreate)
     {
         if (!IsValid(toCreate))

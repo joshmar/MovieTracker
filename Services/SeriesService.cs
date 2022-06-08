@@ -17,14 +17,17 @@ public class SeriesService : ISeriesService
     public async Task<List<Series>> GetAllAsync() =>
         await _context.Series.ToListAsync();
 
-    public Task<List<Series?>> GetByIdsAsync(IEnumerable<Guid> id)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<Series?> GetByIdAsync(Guid id) =>
         await _context.Series.FindAsync(id);
 
+    public async IAsyncEnumerable<Series?> GetByIdsAsync(IEnumerable<Guid> ids)
+    {
+        foreach (var id in ids)
+        {
+            yield return await GetByIdAsync(id);
+        }
+    }
+    
     public async Task<Series?> CreateAsync(Series toCreate)
     {
         if (!IsValid(toCreate))

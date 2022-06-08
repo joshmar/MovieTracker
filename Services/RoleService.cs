@@ -17,14 +17,17 @@ public class RoleService : IRoleService
     public async Task<List<Role>> GetAllAsync() =>
         await _context.Roles.ToListAsync();
 
-    public Task<List<Role?>> GetByIdsAsync(IEnumerable<Guid> id)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<Role?> GetByIdAsync(Guid id) =>
         await _context.Roles.FindAsync(id);
 
+    public async IAsyncEnumerable<Role?> GetByIdsAsync(IEnumerable<Guid> ids)
+    {
+        foreach (var id in ids)
+        {
+            yield return await GetByIdAsync(id);
+        }
+    }
+    
     public Role? GetById(Guid id) =>
         _context.Roles.Find(id);
 

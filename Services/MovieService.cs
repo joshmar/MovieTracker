@@ -17,13 +17,16 @@ public class MovieService : IMovieService
     public async Task<List<Movie>> GetAllAsync() =>
         await _context.Movies.ToListAsync();
 
-    public Task<List<Movie?>> GetByIdsAsync(IEnumerable<Guid> id)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<Movie?> GetByIdAsync(Guid id) =>
         await _context.Movies.FindAsync(id);
+    
+    public async IAsyncEnumerable<Movie?> GetByIdsAsync(IEnumerable<Guid> ids)
+    {
+        foreach (var id in ids)
+        {
+            yield return await GetByIdAsync(id);
+        }
+    }
 
     public async Task<Movie?> CreateAsync(Movie toCreate)
     {

@@ -3,10 +3,10 @@
 public interface ICrudMethods<T>
 {
     public Task<List<T>> GetAllAsync();
-    
-    public Task<List<T?>> GetByIdsAsync(IEnumerable<Guid> id);
-    
+
     public Task<T?> GetByIdAsync(Guid id);
+    
+    public IAsyncEnumerable<T?> GetByIdsAsync(IEnumerable<Guid> ids);
     
     public Task<T?> CreateAsync(T toCreate);
     
