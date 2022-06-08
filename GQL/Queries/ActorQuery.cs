@@ -22,5 +22,16 @@ public sealed class ActorQuery : ObjectGraphType
                 var id = fieldContext.GetArgument<Guid>("id");
                 return await actorService.GetByIdAsync(id, fieldContext.CancellationToken);
             });
+        
+        FieldAsync<ListGraphType<ActorType>>("actorsByIds",
+            arguments: new QueryArguments(new QueryArgument<NonNullGraphType<ListGraphType<GuidGraphType>>>
+            {
+                Name = "ids"
+            }),
+            resolve: async fieldContext =>
+            {
+                var id = fieldContext.GetArgument<IEnumerable<Guid>>("ids");
+                return await actorService.GetByIdsAsync(id, fieldContext.CancellationToken);
+            });
     }
 }
