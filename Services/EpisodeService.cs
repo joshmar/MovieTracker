@@ -96,6 +96,6 @@ public class EpisodeService : IEpisodeService
         return true;
     }
 
-    private static bool IsValid(Episode toCreate) =>
-        toCreate.SeriesId == toCreate.Series.Id && !toCreate.Title.IsNullOrWhiteSpace();
+    private static bool IsValid(Episode episode) =>
+        episode.SeriesId == episode.Series.Id && !episode.Title.IsNullOrWhiteSpace();
 }

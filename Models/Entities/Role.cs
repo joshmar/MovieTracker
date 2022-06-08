@@ -32,6 +32,8 @@ public class Role
         Score = score;
         Episode = episode;
         EpisodeId = episode.Id;
+        Series = episode.Series;
+        SeriesId = episode.SeriesId;
     }
     
     public Role(string name, Actor actor, Movie movie, string? description = null, byte? score = null)

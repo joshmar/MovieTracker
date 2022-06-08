@@ -96,6 +96,6 @@ public class SeriesService : ISeriesService
         return true;
     }
     
-    private static bool IsValid(Series toCreate) =>
-        !toCreate.Title.IsNullOrWhiteSpace();
+    private static bool IsValid(Series series) =>
+        !series.Title.IsNullOrWhiteSpace();
 }

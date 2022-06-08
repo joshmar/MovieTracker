@@ -96,6 +96,6 @@ public class MovieService : IMovieService
         return true;
     }
 
-    private static bool IsValid(Movie toCreate) => 
-        !toCreate.Title.IsNullOrWhiteSpace();
+    private static bool IsValid(Movie movie) => 
+        !movie.Title.IsNullOrWhiteSpace();
 }
