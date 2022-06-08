@@ -1,57 +1,101 @@
-﻿using MovieTracker.Models.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using MovieTracker.Extension;
+using MovieTracker.Models.Entities;
 using MovieTracker.Services.Interfaces;
 
 namespace MovieTracker.Services;
 
 public class SeriesService : ISeriesService
 {
-    public Task<List<Series>> GetAllAsync()
-    {
-        throw new NotImplementedException();
-    }
+    private readonly MovieTrackerContext _context;
 
-    public List<Series> GetAll()
+    public SeriesService(MovieTrackerContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
     }
+    
+    public async Task<List<Series>> GetAllAsync() =>
+        await _context.Series.ToListAsync();
 
-    public Task<Series?> GetByIdAsync(Guid id)
-    {
-        throw new NotImplementedException();
-    }
+    public List<Series> GetAll() =>
+        _context.Series.ToList();
 
-    public Series? GetById(Guid id)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<Series?> GetByIdAsync(Guid id) =>
+        await _context.Series.FindAsync(id);
 
-    public Task<Series?> CreateAsync(Series toCreate)
+    public Series? GetById(Guid id) =>
+        _context.Series.Find(id);
+
+    public async Task<Series?> CreateAsync(Series toCreate)
     {
-        throw new NotImplementedException();
+        if (!IsValid(toCreate))
+        {
+            return null;
+        }
+
+        await _context.Series.AddAsync(toCreate);
+        await _context.SaveChangesAsync();
+        
+        return await GetByIdAsync(toCreate.Id);
     }
 
     public Series? Create(Series toCreate)
     {
-        throw new NotImplementedException();
+        if (!IsValid(toCreate))
+        {
+            return null;
+        }
+
+        _context.Series.Add(toCreate);
+        _context.SaveChanges();
+        
+        return GetById(toCreate.Id);
     }
 
-    public Task<bool> UpdateAsync(Series toUpdate)
+    public async Task<bool> UpdateAsync(Series toUpdate)
     {
-        throw new NotImplementedException();
+        if (await GetByIdAsync(toUpdate.Id) == null || !IsValid(toUpdate))
+            return false;
+
+        _context.Series.Update(toUpdate);
+        await _context.SaveChangesAsync();
+        return true;
     }
 
     public bool Update(Series toUpdate)
     {
-        throw new NotImplementedException();
+        if (GetById(toUpdate.Id) == null || !IsValid(toUpdate)) 
+            return false;
+        
+        _context.Series.Update(toUpdate);
+        _context.SaveChanges();
+        return true;
     }
 
-    public Task<bool> DeleteAsync(Guid id)
+    public async Task<bool> DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var toDelete = await GetByIdAsync(id);
+        if (toDelete == null)
+            return false;
+
+        _context.Series.Remove(toDelete);
+        await _context.SaveChangesAsync();
+
+        return true;
     }
 
     public bool Delete(Guid id)
     {
-        throw new NotImplementedException();
+        var toDelete = GetById(id);
+        if (toDelete == null)
+            return false;
+
+        _context.Series.Remove(toDelete);
+        _context.SaveChanges();
+
+        return true;
     }
+    
+    private static bool IsValid(Series toCreate) =>
+        !toCreate.Title.IsNullOrWhiteSpace();
 }

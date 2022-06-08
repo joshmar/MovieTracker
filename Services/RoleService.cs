@@ -5,6 +5,13 @@ namespace MovieTracker.Services;
 
 public class RoleService : IRoleService
 {
+    private readonly MovieTrackerContext _context;
+
+    public RoleService(MovieTrackerContext context)
+    {
+        _context = context;
+    }
+    
     public Task<List<Role>> GetAllAsync()
     {
         throw new NotImplementedException();

@@ -54,7 +54,7 @@ public class ActorService : IActorService
 
     public async Task<bool> UpdateAsync(Actor toUpdate)
     {
-        if (await GetByIdAsync(toUpdate.Id) == null) 
+        if (await GetByIdAsync(toUpdate.Id) == null || !IsValid(toUpdate)) 
             return false;
         
         _context.Actors.Update(toUpdate);
@@ -64,7 +64,7 @@ public class ActorService : IActorService
 
     public bool Update(Actor toUpdate)
     {
-        if (GetById(toUpdate.Id) == null) 
+        if (GetById(toUpdate.Id) == null || !IsValid(toUpdate)) 
             return false;
         
         _context.Actors.Update(toUpdate);
@@ -97,5 +97,5 @@ public class ActorService : IActorService
     }
 
     private static bool IsValid(Actor actor) =>
-        !actor.FirstName.IsNullOrWhiteSpace() || !actor.LastName.IsNullOrWhiteSpace();
+        !actor.FirstName.IsNullOrWhiteSpace() && !actor.LastName.IsNullOrWhiteSpace();
 }

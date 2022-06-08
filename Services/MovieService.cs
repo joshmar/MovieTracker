@@ -1,57 +1,101 @@
-﻿using MovieTracker.Models.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using MovieTracker.Extension;
+using MovieTracker.Models.Entities;
 using MovieTracker.Services.Interfaces;
 
 namespace MovieTracker.Services;
 
 public class MovieService : IMovieService
 {
-    public Task<List<Movie>> GetAllAsync()
-    {
-        throw new NotImplementedException();
-    }
+    private readonly MovieTrackerContext _context;
 
-    public List<Movie> GetAll()
+    public MovieService(MovieTrackerContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
     }
+    
+    public async Task<List<Movie>> GetAllAsync() =>
+        await _context.Movies.ToListAsync();
 
-    public Task<Movie?> GetByIdAsync(Guid id)
-    {
-        throw new NotImplementedException();
-    }
+    public List<Movie> GetAll() =>
+        _context.Movies.ToList();
 
-    public Movie? GetById(Guid id)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<Movie?> GetByIdAsync(Guid id) =>
+        await _context.Movies.FindAsync(id);
 
-    public Task<Movie?> CreateAsync(Movie toCreate)
+    public Movie? GetById(Guid id) =>
+        _context.Movies.Find(id);
+
+    public async Task<Movie?> CreateAsync(Movie toCreate)
     {
-        throw new NotImplementedException();
+        if (!IsValid(toCreate))
+        {
+            return null;
+        }
+
+        await _context.Movies.AddAsync(toCreate);
+        await _context.SaveChangesAsync();
+        
+        return await GetByIdAsync(toCreate.Id);
     }
 
     public Movie? Create(Movie toCreate)
     {
-        throw new NotImplementedException();
+        if (!IsValid(toCreate))
+        {
+            return null;
+        }
+
+        _context.Movies.Add(toCreate);
+        _context.SaveChanges();
+        
+        return GetById(toCreate.Id);
     }
 
-    public Task<bool> UpdateAsync(Movie toUpdate)
+    public async Task<bool> UpdateAsync(Movie toUpdate)
     {
-        throw new NotImplementedException();
+        if (await GetByIdAsync(toUpdate.Id) == null || !IsValid(toUpdate))
+            return false;
+
+        _context.Movies.Update(toUpdate);
+        await _context.SaveChangesAsync();
+        return true;
     }
 
     public bool Update(Movie toUpdate)
     {
-        throw new NotImplementedException();
+        if (GetById(toUpdate.Id) == null || !IsValid(toUpdate)) 
+            return false;
+        
+        _context.Movies.Update(toUpdate);
+        _context.SaveChanges();
+        return true;
     }
 
-    public Task<bool> DeleteAsync(Guid id)
+    public async Task<bool> DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var toDelete = await GetByIdAsync(id);
+        if (toDelete == null)
+            return false;
+
+        _context.Movies.Remove(toDelete);
+        await _context.SaveChangesAsync();
+
+        return true;
     }
 
     public bool Delete(Guid id)
     {
-        throw new NotImplementedException();
+        var toDelete = GetById(id);
+        if (toDelete == null)
+            return false;
+
+        _context.Movies.Remove(toDelete);
+        _context.SaveChanges();
+
+        return true;
     }
+
+    private static bool IsValid(Movie toCreate) => 
+        !toCreate.Title.IsNullOrWhiteSpace();
 }

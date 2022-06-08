@@ -1,57 +1,101 @@
-﻿using MovieTracker.Models.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using MovieTracker.Extension;
+using MovieTracker.Models.Entities;
 using MovieTracker.Services.Interfaces;
 
 namespace MovieTracker.Services;
 
 public class EpisodeService : IEpisodeService
 {
-    public Task<List<Episode>> GetAllAsync()
+    private readonly MovieTrackerContext _context;
+
+    public EpisodeService(MovieTrackerContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
     }
 
-    public List<Episode> GetAll()
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<List<Episode>> GetAllAsync() =>
+        await _context.Episodes.ToListAsync();
 
-    public Task<Episode?> GetByIdAsync(Guid id)
-    {
-        throw new NotImplementedException();
-    }
+    public List<Episode> GetAll() =>
+        _context.Episodes.ToList();
 
-    public Episode? GetById(Guid id)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<Episode?> GetByIdAsync(Guid id) =>
+        await _context.Episodes.FindAsync(id);
 
-    public Task<Episode?> CreateAsync(Episode toCreate)
+    public Episode? GetById(Guid id) =>
+        _context.Episodes.Find();
+
+    public async Task<Episode?> CreateAsync(Episode toCreate)
     {
-        throw new NotImplementedException();
+        if (!IsValid(toCreate))
+        {
+            return null;
+        }
+
+        await _context.Episodes.AddAsync(toCreate);
+        await _context.SaveChangesAsync();
+        
+        return await GetByIdAsync(toCreate.Id);
     }
 
     public Episode? Create(Episode toCreate)
     {
-        throw new NotImplementedException();
+        if (!IsValid(toCreate))
+        {
+            return null;
+        }
+
+        _context.Episodes.Add(toCreate);
+        _context.SaveChanges();
+        
+        return GetById(toCreate.Id);
     }
 
-    public Task<bool> UpdateAsync(Episode toUpdate)
+    public async Task<bool> UpdateAsync(Episode toUpdate)
     {
-        throw new NotImplementedException();
+        if (await GetByIdAsync(toUpdate.Id) == null || !IsValid(toUpdate)) 
+            return false;
+        
+        _context.Episodes.Update(toUpdate);
+        await _context.SaveChangesAsync();
+        return true;
     }
 
     public bool Update(Episode toUpdate)
     {
-        throw new NotImplementedException();
+        if (GetById(toUpdate.Id) == null || !IsValid(toUpdate)) 
+            return false;
+        
+        _context.Episodes.Update(toUpdate);
+        _context.SaveChanges();
+        return true;
     }
 
-    public Task<bool> DeleteAsync(Guid id)
+    public async Task<bool> DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var toDelete = await GetByIdAsync(id);
+        if (toDelete == null)
+            return false;
+
+        _context.Episodes.Remove(toDelete);
+        await _context.SaveChangesAsync();
+
+        return true;
     }
 
     public bool Delete(Guid id)
     {
-        throw new NotImplementedException();
+        var toDelete = GetById(id);
+        if (toDelete == null)
+            return false;
+
+        _context.Episodes.Remove(toDelete);
+        _context.SaveChanges();
+
+        return true;
     }
+
+    private static bool IsValid(Episode toCreate) =>
+        toCreate.SeriesId == toCreate.Series.Id && !toCreate.Title.IsNullOrWhiteSpace();
 }
