@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MovieTracker.Extension;
 using MovieTracker.Models.Entities;
+using MovieTracker.Services.Interfaces;
 
 namespace MovieTracker.Controllers;
 
@@ -9,37 +8,30 @@ namespace MovieTracker.Controllers;
 [Route("[controller]")]
 public class ActorController : ControllerBase
 {
-    private readonly MovieTrackerContext _context;
+    private readonly IActorService _service;
 
-    public ActorController(MovieTrackerContext context)
+    public ActorController(IActorService service)
     {
-        _context = context;
+        _service = service;
     }
     
-    [HttpGet(Name = "GetActor")]
-    public async Task<IActionResult> GetAsync()
-    {
-        var actor = await _context.Actors.FirstAsync();
-        
-        var returnObject = new { 
-            actor = actor.FirstName + actor.LastName, 
-            roles = actor.Roles?.First(), 
-            movie = actor.Roles?.First().Movie?.Title
-        };
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAsync() => 
+        Ok(await _service.GetAllAsync());
 
-        return Ok(returnObject);
-    }
+    [HttpGet("by-id/{id:guid}")]
+    public async Task<IActionResult> GetByIdAsync(Guid id) => 
+        Ok(await _service.GetByIdAsync(id));
 
-    [HttpPost(Name = "AddActor")]
-    public IActionResult AddActor([FromBody]Actor actor)
-    {
-        if (!IsActorValid(actor))
-        {
-            return BadRequest("Invalid actor details.");
-        }
-        return Ok(actor);
-    }
+    [HttpPost("create")]
+    public async Task<IActionResult> CreateAsync(Actor actor) => 
+        Created($"/GetById?id={(await _service.CreateAsync(actor))?.Id}", actor);
 
-    private static bool IsActorValid(Actor actor) =>
-        !actor.FirstName.IsNullOrWhiteSpace() || !actor.LastName.IsNullOrWhiteSpace();
+    [HttpPut("update")]
+    public async Task<IActionResult> UpdateAsync(Actor actor) =>
+        await _service.UpdateAsync(actor) ? NoContent() : NotFound();
+
+    [HttpDelete("delete/{id:guid}")]
+    public async Task<IActionResult> DeleteAsync(Guid id) =>
+        await _service.DeleteAsync(id) ? NoContent() : NotFound();
 }

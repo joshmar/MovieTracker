@@ -24,6 +24,14 @@ builder.Services.AddSwaggerGen();
 
 builder.Services
     .AddScoped<IActorService, ActorService>();
+builder.Services
+    .AddScoped<IEpisodeService, EpisodeService>();
+builder.Services
+    .AddScoped<IMovieService, MovieService>();
+builder.Services
+    .AddScoped<IRoleService, RoleService>();
+builder.Services
+    .AddScoped<ISeriesService, SeriesService>();
 
 builder.Services.AddScoped<IServiceProvider>(provider => 
     new FuncServiceProvider(provider.GetRequiredService));
