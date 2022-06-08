@@ -29,7 +29,7 @@ public sealed class MovieType : ObjectGraphType<Movie>
                         {
                             var toReturnList = new List<Role>();
                             foreach (var movieId in movieIds)
-                                toReturnList.AddRange(await roleService.GetByEpisodeIdAsync(movieId));
+                                toReturnList.AddRange(await roleService.GetByMovieIdAsync(movieId));
 
                             return toReturnList.ToLookup(x => x.Id);
                         });

@@ -14,51 +14,51 @@ public class MovieService : IMovieService
         _context = context;
     }
     
-    public async Task<List<Movie>> GetAllAsync() =>
-        await _context.Movies.ToListAsync();
+    public async Task<List<Movie>> GetAllAsync(CancellationToken cancellationToken) =>
+        await _context.Movies.ToListAsync(cancellationToken);
 
-    public async Task<Movie?> GetByIdAsync(Guid id) =>
-        await _context.Movies.FindAsync(id);
+    public async Task<Movie?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
+        await _context.Movies.FindAsync(id, cancellationToken);
     
-    public async IAsyncEnumerable<Movie?> GetByIdsAsync(IEnumerable<Guid> ids)
+    public async IAsyncEnumerable<Movie?> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken)
     {
         foreach (var id in ids)
         {
-            yield return await GetByIdAsync(id);
+            yield return await GetByIdAsync(id, cancellationToken);
         }
     }
 
-    public async Task<Movie?> CreateAsync(Movie toCreate)
+    public async Task<Movie?> CreateAsync(Movie toCreate, CancellationToken cancellationToken)
     {
         if (!IsValid(toCreate))
         {
             return null;
         }
 
-        await _context.Movies.AddAsync(toCreate);
-        await _context.SaveChangesAsync();
+        await _context.Movies.AddAsync(toCreate, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
         
         return toCreate;
     }
 
-    public async Task<bool> UpdateAsync(Movie toUpdate)
+    public async Task<bool> UpdateAsync(Movie toUpdate, CancellationToken cancellationToken)
     {
-        if (await GetByIdAsync(toUpdate.Id) == null || !IsValid(toUpdate))
+        if (await GetByIdAsync(toUpdate.Id, cancellationToken) == null || !IsValid(toUpdate))
             return false;
 
         _context.Movies.Update(toUpdate);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
         return true;
     }
 
-    public async Task<bool> DeleteAsync(Guid id)
+    public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
-        var toDelete = await GetByIdAsync(id);
+        var toDelete = await GetByIdAsync(id, cancellationToken);
         if (toDelete == null)
             return false;
 
         _context.Movies.Remove(toDelete);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         return true;
     }

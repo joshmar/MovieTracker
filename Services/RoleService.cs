@@ -14,66 +14,66 @@ public class RoleService : IRoleService
         _context = context;
     }
     
-    public async Task<List<Role>> GetAllAsync() =>
-        await _context.Roles.ToListAsync();
+    public async Task<List<Role>> GetAllAsync(CancellationToken cancellationToken) =>
+        await _context.Roles.ToListAsync(cancellationToken);
 
-    public async Task<Role?> GetByIdAsync(Guid id) =>
-        await _context.Roles.FindAsync(id);
+    public async Task<Role?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
+        await _context.Roles.FindAsync(id, cancellationToken);
 
-    public async IAsyncEnumerable<Role?> GetByIdsAsync(IEnumerable<Guid> ids)
+    public async IAsyncEnumerable<Role?> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken)
     {
         foreach (var id in ids)
         {
-            yield return await GetByIdAsync(id);
+            yield return await GetByIdAsync(id, cancellationToken);
         }
     }
 
-    public async Task<Role?> CreateAsync(Role toCreate)
+    public async Task<Role?> CreateAsync(Role toCreate, CancellationToken cancellationToken)
     {
         if (!IsValid(toCreate))
         {
             return null;
         }
 
-        await _context.Roles.AddAsync(toCreate);
-        await _context.SaveChangesAsync();
+        await _context.Roles.AddAsync(toCreate, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
         
-        return await GetByIdAsync(toCreate.Id);
+        return await GetByIdAsync(toCreate.Id, cancellationToken);
     }
 
-    public async Task<bool> UpdateAsync(Role toUpdate)
+    public async Task<bool> UpdateAsync(Role toUpdate, CancellationToken cancellationToken)
     {
-        if (await GetByIdAsync(toUpdate.Id) == null || !IsValid(toUpdate)) 
+        if (await GetByIdAsync(toUpdate.Id, cancellationToken) == null || !IsValid(toUpdate)) 
             return false;
         
         _context.Roles.Update(toUpdate);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
         return true;
     }
 
-    public async Task<bool> DeleteAsync(Guid id)
+    public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
-        var toDelete = await GetByIdAsync(id);
+        var toDelete = await GetByIdAsync(id, cancellationToken);
         if (toDelete == null)
             return false;
 
         _context.Roles.Remove(toDelete);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         return true;
     }
     
-    public async Task<IEnumerable<Role>> GetByActorIdAsync(Guid actorId) => 
-        await _context.Roles.Where(role => role.ActorId == actorId).ToListAsync();
+    public async Task<IEnumerable<Role>> GetByActorIdAsync(Guid actorId, CancellationToken cancellationToken) => 
+        await _context.Roles.Where(role => role.ActorId == actorId).ToListAsync(cancellationToken);
 
-    public async Task<IEnumerable<Role>> GetByEpisodeIdAsync(Guid episodeId) => 
-        await _context.Roles.Where(role => role.EpisodeId == episodeId).ToListAsync();
+    public async Task<IEnumerable<Role>> GetByEpisodeIdAsync(Guid episodeId, CancellationToken cancellationToken) => 
+        await _context.Roles.Where(role => role.EpisodeId == episodeId).ToListAsync(cancellationToken);
 
-    public async Task<IEnumerable<Role>> GetByMovieIdAsync(Guid movieId) => 
-        await _context.Roles.Where(role => role.MovieId == movieId).ToListAsync();
+    public async Task<IEnumerable<Role>> GetByMovieIdAsync(Guid movieId, CancellationToken cancellationToken) => 
+        await _context.Roles.Where(role => role.MovieId == movieId).ToListAsync(cancellationToken);
 
-    public async Task<IEnumerable<Role>> GetBySeriesIdAsync(Guid seriesId) => 
-        await _context.Roles.Where(role => role.SeriesId == seriesId).ToListAsync();
+    public async Task<IEnumerable<Role>> GetBySeriesIdAsync(Guid seriesId, CancellationToken cancellationToken) => 
+        await _context.Roles.Where(role => role.SeriesId == seriesId).ToListAsync(cancellationToken);
 
     private static bool IsValid(Role role)
     {

@@ -14,53 +14,53 @@ public class SeriesService : ISeriesService
         _context = context;
     }
     
-    public async Task<List<Series>> GetAllAsync() =>
-        await _context.Series.ToListAsync();
+    public async Task<List<Series>> GetAllAsync(CancellationToken cancellationToken) =>
+        await _context.Series.ToListAsync(cancellationToken);
 
-    public async Task<Series?> GetByIdAsync(Guid id) =>
-        await _context.Series.FindAsync(id);
+    public async Task<Series?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
+        await _context.Series.FindAsync(id, cancellationToken);
 
-    public async IAsyncEnumerable<Series?> GetByIdsAsync(IEnumerable<Guid> ids)
+    public async IAsyncEnumerable<Series?> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken)
     {
         foreach (var id in ids)
         {
-            yield return await GetByIdAsync(id);
+            yield return await GetByIdAsync(id, cancellationToken);
         }
     }
     
-    public async Task<Series?> CreateAsync(Series toCreate)
+    public async Task<Series?> CreateAsync(Series toCreate, CancellationToken cancellationToken)
     {
         if (!IsValid(toCreate))
         {
             return null;
         }
 
-        await _context.Series.AddAsync(toCreate);
-        await _context.SaveChangesAsync();
+        await _context.Series.AddAsync(toCreate, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
         
         return toCreate;
     }
 
-    public async Task<bool> UpdateAsync(Series toUpdate)
+    public async Task<bool> UpdateAsync(Series toUpdate, CancellationToken cancellationToken)
     {
-        if (await GetByIdAsync(toUpdate.Id) == null || !IsValid(toUpdate))
+        if (await GetByIdAsync(toUpdate.Id, cancellationToken) == null || !IsValid(toUpdate))
             return false;
 
         toUpdate.UpdateEpisodeWatched();
         
         _context.Series.Update(toUpdate);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
         return true;
     }
 
-    public async Task<bool> DeleteAsync(Guid id)
+    public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
-        var toDelete = await GetByIdAsync(id);
+        var toDelete = await GetByIdAsync(id, cancellationToken);
         if (toDelete == null)
             return false;
 
         _context.Series.Remove(toDelete);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         return true;
     }
