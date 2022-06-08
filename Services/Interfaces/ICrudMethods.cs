@@ -6,7 +6,7 @@ public interface ICrudMethods<T>
 
     public Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
     
-    public IAsyncEnumerable<T?> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default);
+    public Task<IEnumerable<T?>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default);
     
     public Task<T?> CreateAsync(T toCreate, CancellationToken cancellationToken = default);
     

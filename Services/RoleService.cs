@@ -20,13 +20,8 @@ public class RoleService : IRoleService
     public async Task<Role?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
         await _context.Roles.FindAsync(new object?[] { id }, cancellationToken);
 
-    public async IAsyncEnumerable<Role?> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken)
-    {
-        foreach (var id in ids)
-        {
-            yield return await GetByIdAsync(id, cancellationToken);
-        }
-    }
+    public async Task<IEnumerable<Role?>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken) => 
+        await _context.Roles.Where(role => ids.Contains(role.Id)).ToListAsync(cancellationToken);
 
     public async Task<Role?> CreateAsync(Role toCreate, CancellationToken cancellationToken)
     {

@@ -20,13 +20,8 @@ public class MovieService : IMovieService
     public async Task<Movie?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
         await _context.Movies.FindAsync(new object?[] { id }, cancellationToken);
     
-    public async IAsyncEnumerable<Movie?> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken)
-    {
-        foreach (var id in ids)
-        {
-            yield return await GetByIdAsync(id, cancellationToken);
-        }
-    }
+    public async Task<IEnumerable<Movie?>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken) => 
+        await _context.Movies.Where(movie => ids.Contains(movie.Id)).ToListAsync(cancellationToken);
 
     public async Task<Movie?> CreateAsync(Movie toCreate, CancellationToken cancellationToken)
     {

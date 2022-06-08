@@ -21,13 +21,8 @@ public class ActorService : IActorService
     public async Task<Actor?> GetByIdAsync(Guid id, CancellationToken cancellationToken) => 
         await _context.Actors.FindAsync(new object?[] { id }, cancellationToken);
     
-    public async IAsyncEnumerable<Actor?> GetByIdsAsync(IEnumerable<Guid> ids, [EnumeratorCancellation] CancellationToken cancellationToken)
-    {
-        foreach (var id in ids)
-        {
-            yield return await GetByIdAsync(id, cancellationToken);
-        }
-    }
+    public async Task<IEnumerable<Actor?>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken) => 
+        await _context.Actors.Where(actor => ids.Contains(actor.Id)).ToListAsync(cancellationToken);
 
     public async Task<Actor?> CreateAsync(Actor toCreate, CancellationToken cancellationToken)
     {

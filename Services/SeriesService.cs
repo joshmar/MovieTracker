@@ -20,13 +20,8 @@ public class SeriesService : ISeriesService
     public async Task<Series?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
         await _context.Series.FindAsync(new object?[] { id }, cancellationToken);
 
-    public async IAsyncEnumerable<Series?> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken)
-    {
-        foreach (var id in ids)
-        {
-            yield return await GetByIdAsync(id, cancellationToken);
-        }
-    }
+    public async Task<IEnumerable<Series?>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken) => 
+        await _context.Series.Where(series => ids.Contains(series.Id)).ToListAsync(cancellationToken);
     
     public async Task<Series?> CreateAsync(Series toCreate, CancellationToken cancellationToken)
     {

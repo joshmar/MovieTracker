@@ -20,13 +20,8 @@ public class EpisodeService : IEpisodeService
     public async Task<Episode?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
         await _context.Episodes.FindAsync(new object?[] { id }, cancellationToken);
 
-    public async IAsyncEnumerable<Episode?> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken)
-    {
-        foreach (var id in ids)
-        {
-            yield return await GetByIdAsync(id, cancellationToken);
-        }
-    }
+    public async Task<IEnumerable<Episode?>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken) => 
+        await _context.Episodes.Where(episode => ids.Contains(episode.Id)).ToListAsync(cancellationToken);
     
     public async Task<Episode?> CreateAsync(Episode toCreate, CancellationToken cancellationToken)
     {
