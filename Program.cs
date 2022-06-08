@@ -1,16 +1,9 @@
 using GraphQL;
-using GraphQL.DataLoader;using GraphQL.DI;
 using GraphQL.MicrosoftDI;
-using GraphQL.Server;
-using GraphQL.SystemTextJson;
-using GraphQL.Types;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using MovieTracker;
 using MovieTracker.Extensions;
-using MovieTracker.GQL.Queries;
 using MovieTracker.GQL.Schemas;
-using MovieTracker.Models.Entities;
 using MovieTracker.Services;
 using MovieTracker.Services.Interfaces;
 
@@ -19,11 +12,12 @@ var connectionString = builder.Configuration.GetConnectionString("MovieTrackerDa
 
 //DB Config
 builder.Services.AddScoped<MovieTrackerContext>()
-    .AddDbContext<MovieTrackerContext>(options => 
-    options.UseSqlServer(connectionString));
+    .AddDbContext<MovieTrackerContext>(options => options
+        .UseSqlServer(connectionString));
 
 // Add services to the container.
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

@@ -20,8 +20,7 @@ public class MovieTrackerContext : DbContext
             .HasOne<Actor>(role => role.Actor)
             .WithMany(actor => actor.Roles)
             .HasForeignKey(role => role.ActorId)
-            .OnDelete(DeleteBehavior.Cascade)
-            .IsRequired();
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Role>()
             .HasOne<Series>(role => role.Series)
