@@ -11,7 +11,7 @@ public class Movie
     //Relationships
     public virtual ICollection<Role>? Roles { get; set; }
 
-    //EF required
+    [Obsolete("EF Required", true)]
     public Movie() { }
     public Movie(string title, bool watched, string? description = null, byte? score = null, ICollection<Role>? roles = null)
     {

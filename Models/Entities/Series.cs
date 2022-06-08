@@ -12,7 +12,7 @@ public class Series
     public virtual ICollection<Episode>? Episodes { get; set; }
     public virtual ICollection<Role>? Roles { get; set; }
 
-    //EF required
+    [Obsolete("EF Required", true)]
     public Series() { }
     public Series(string title, bool watched, string? description = null, byte? score = null, ICollection<Episode>? episodes = null, ICollection<Role>? roles = null)
     {

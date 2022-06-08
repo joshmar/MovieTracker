@@ -9,9 +9,8 @@ public class Actor
 
     //Relationships
     public virtual ICollection<Role>? Roles { get; set; }
-
-
-    // EF required
+    
+    [Obsolete("EF Required", true)]
     public Actor() { }
     public Actor(string firstName, string lastName, byte? score = null, ICollection<Role>? roles = null)
     {

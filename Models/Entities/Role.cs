@@ -20,7 +20,7 @@ public class Role
     public Guid? SeriesId { get; set; }
     public Series? Series { get; set; }
 
-    //EF required
+    [Obsolete("EF Required", true)]
     public Role() { }
     public Role(string name, Actor actor, Episode episode, string? description = null, byte? score = null)
     {
