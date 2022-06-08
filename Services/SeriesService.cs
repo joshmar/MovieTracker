@@ -18,7 +18,7 @@ public class SeriesService : ISeriesService
         await _context.Series.ToListAsync(cancellationToken);
 
     public async Task<Series?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
-        await _context.Series.FindAsync(id, cancellationToken);
+        await _context.Series.FindAsync(new object?[] { id }, cancellationToken);
 
     public async IAsyncEnumerable<Series?> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken)
     {

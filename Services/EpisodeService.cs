@@ -18,7 +18,7 @@ public class EpisodeService : IEpisodeService
         await _context.Episodes.ToListAsync(cancellationToken);
 
     public async Task<Episode?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
-        await _context.Episodes.FindAsync(id, cancellationToken);
+        await _context.Episodes.FindAsync(new object?[] { id }, cancellationToken);
 
     public async IAsyncEnumerable<Episode?> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken)
     {

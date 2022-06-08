@@ -18,7 +18,7 @@ public class RoleService : IRoleService
         await _context.Roles.ToListAsync(cancellationToken);
 
     public async Task<Role?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
-        await _context.Roles.FindAsync(id, cancellationToken);
+        await _context.Roles.FindAsync(new object?[] { id }, cancellationToken);
 
     public async IAsyncEnumerable<Role?> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken)
     {

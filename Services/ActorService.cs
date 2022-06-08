@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Runtime.CompilerServices;
+using Microsoft.EntityFrameworkCore;
 using MovieTracker.Extension;
 using MovieTracker.Models.Entities;
 using MovieTracker.Services.Interfaces;
@@ -18,9 +19,9 @@ public class ActorService : IActorService
         await _context.Actors.ToListAsync(cancellationToken);
 
     public async Task<Actor?> GetByIdAsync(Guid id, CancellationToken cancellationToken) => 
-        await _context.Actors.FindAsync(id, cancellationToken);
+        await _context.Actors.FindAsync(new object?[] { id }, cancellationToken);
     
-    public async IAsyncEnumerable<Actor?> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken)
+    public async IAsyncEnumerable<Actor?> GetByIdsAsync(IEnumerable<Guid> ids, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         foreach (var id in ids)
         {

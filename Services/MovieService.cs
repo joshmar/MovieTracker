@@ -18,7 +18,7 @@ public class MovieService : IMovieService
         await _context.Movies.ToListAsync(cancellationToken);
 
     public async Task<Movie?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
-        await _context.Movies.FindAsync(id, cancellationToken);
+        await _context.Movies.FindAsync(new object?[] { id }, cancellationToken);
     
     public async IAsyncEnumerable<Movie?> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken)
     {
