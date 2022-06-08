@@ -63,16 +63,16 @@ public class RoleService : IRoleService
         return true;
     }
     
-    public async Task<List<Role>> GetByActorIdAsync(Guid actorId) => 
+    public async Task<IEnumerable<Role>> GetByActorIdAsync(Guid actorId) => 
         await _context.Roles.Where(role => role.ActorId == actorId).ToListAsync();
 
-    public async Task<List<Role>> GetByEpisodeIdAsync(Guid episodeId) => 
+    public async Task<IEnumerable<Role>> GetByEpisodeIdAsync(Guid episodeId) => 
         await _context.Roles.Where(role => role.EpisodeId == episodeId).ToListAsync();
 
-    public async Task<List<Role>> GetByMovieIdAsync(Guid movieId) => 
+    public async Task<IEnumerable<Role>> GetByMovieIdAsync(Guid movieId) => 
         await _context.Roles.Where(role => role.MovieId == movieId).ToListAsync();
 
-    public async Task<List<Role>> GetBySeriesIdAsync(Guid seriesId) => 
+    public async Task<IEnumerable<Role>> GetBySeriesIdAsync(Guid seriesId) => 
         await _context.Roles.Where(role => role.SeriesId == seriesId).ToListAsync();
 
     private static bool IsValid(Role role)
