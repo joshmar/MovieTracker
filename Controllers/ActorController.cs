@@ -16,22 +16,22 @@ public class ActorController : ControllerBase
     }
     
     [HttpGet("all")]
-    public async Task<IActionResult> GetAsync() => 
-        Ok(await _service.GetAllAsync());
+    public async Task<IActionResult> GetAsync(CancellationToken cancellationToken) => 
+        Ok(await _service.GetAllAsync(cancellationToken));
 
     [HttpGet("by-id/{id:guid}")]
-    public async Task<IActionResult> GetByIdAsync(Guid id) => 
-        Ok(await _service.GetByIdAsync(id));
+    public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken cancellationToken) => 
+        Ok(await _service.GetByIdAsync(id, cancellationToken));
 
     [HttpPost("create")]
-    public async Task<IActionResult> CreateAsync(Actor actor) => 
-        Created($"/GetById?id={(await _service.CreateAsync(actor))?.Id}", actor);
+    public async Task<IActionResult> CreateAsync(Actor actor, CancellationToken cancellationToken) => 
+        Created($"/GetById?id={(await _service.CreateAsync(actor, cancellationToken))?.Id}", actor);
 
     [HttpPut("update")]
-    public async Task<IActionResult> UpdateAsync(Actor actor) =>
-        await _service.UpdateAsync(actor) ? NoContent() : NotFound();
+    public async Task<IActionResult> UpdateAsync(Actor actor, CancellationToken cancellationToken) =>
+        await _service.UpdateAsync(actor, cancellationToken) ? NoContent() : NotFound();
 
     [HttpDelete("delete/{id:guid}")]
-    public async Task<IActionResult> DeleteAsync(Guid id) =>
-        await _service.DeleteAsync(id) ? NoContent() : NotFound();
+    public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken) =>
+        await _service.DeleteAsync(id, cancellationToken) ? NoContent() : NotFound();
 }
