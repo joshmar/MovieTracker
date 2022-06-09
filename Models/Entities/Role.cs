@@ -8,8 +8,8 @@ public class Role
     public byte? Score { get; set; }
     
     //Relationships
-    public Guid ActorId { get; set; }
-    public Actor Actor { get; set; }
+    public Guid? ActorId { get; set; }
+    public Actor? Actor { get; set; }
     
     public Guid? EpisodeId { get; set; }
     public Episode? Episode { get; set; }
