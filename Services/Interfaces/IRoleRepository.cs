@@ -5,8 +5,8 @@ namespace MovieTracker.Services.Interfaces;
 
 public interface IRoleRepository : ICrudMethods<Role, RoleModel>
 {
-    public Task<IEnumerable<Role>> AddActorRelation(Guid actorId, CancellationToken cancellationToken = default);
-    public Task<IEnumerable<Role>> AddEpisodeRelation(Guid episodeId, CancellationToken cancellationToken = default);
-    public Task<IEnumerable<Role>> AddMovieRelation(Guid movieId, CancellationToken cancellationToken = default);
-    public Task<IEnumerable<Role>> AddSeriesRelation(Guid seriesId, CancellationToken cancellationToken = default);
+    public Task<Role?> AddActorRelation(Guid id, Guid actorId, CancellationToken cancellationToken = default);
+    public Task<Role?> AddEpisodeRelation(Guid id, Guid episodeId, CancellationToken cancellationToken = default);
+    public Task<Role?> AddMovieRelation(Guid id, Guid movieId, CancellationToken cancellationToken = default);
+    public Task<Role?> AddSeriesRelation(Guid id, Guid seriesId, CancellationToken cancellationToken = default);
 }

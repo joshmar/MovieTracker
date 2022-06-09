@@ -80,41 +80,69 @@ public class RoleRepository : IRoleRepository
         return true;
     }
     
-    public async Task<IEnumerable<Role>> AddActorRelation(Guid actorId, CancellationToken cancellationToken) => 
-        await _context.Roles
-            .Include(role => role.Actor)
-            .Include(role => role.Series)
-            .Include(role => role.Episode)
-            .Include(role => role.Movie)
-            .Where(role => role.ActorId == actorId)
-            .ToListAsync(cancellationToken);
+    public async Task<Role?> AddActorRelation(Guid id, Guid actorId, CancellationToken cancellationToken)
+    {
+        var toUpdate = await GetByIdAsync(id, cancellationToken);
+        if (toUpdate == null) 
+            return null;
 
-    public async Task<IEnumerable<Role>> AddEpisodeRelation(Guid episodeId, CancellationToken cancellationToken) => 
-        await _context.Roles
-            .Include(role => role.Actor)
-            .Include(role => role.Series)
-            .Include(role => role.Episode)
-            .Include(role => role.Movie)
-            .Where(role => role.EpisodeId == episodeId)
-            .ToListAsync(cancellationToken);
+        toUpdate.ActorId = actorId;
 
-    public async Task<IEnumerable<Role>> AddMovieRelation(Guid movieId, CancellationToken cancellationToken) => 
-        await _context.Roles
+        await _context.SaveChangesAsync(cancellationToken);
+        
+        return await _context.Roles
             .Include(role => role.Actor)
-            .Include(role => role.Series)
-            .Include(role => role.Episode)
-            .Include(role => role.Movie)
-            .Where(role => role.MovieId == movieId)
-            .ToListAsync(cancellationToken);
+            .Where(role => role.Id == id)
+            .SingleOrDefaultAsync(cancellationToken);
+    }
 
-    public async Task<IEnumerable<Role>> AddSeriesRelation(Guid seriesId, CancellationToken cancellationToken) => 
-        await _context.Roles
-            .Include(role => role.Actor)
-            .Include(role => role.Series)
+    public async Task<Role?> AddEpisodeRelation(Guid id, Guid episodeId, CancellationToken cancellationToken)
+    {
+        var toUpdate = await GetByIdAsync(id, cancellationToken);
+        if (toUpdate == null) 
+            return null;
+
+        toUpdate.EpisodeId = episodeId;
+
+        await _context.SaveChangesAsync(cancellationToken);
+        
+        return await _context.Roles
             .Include(role => role.Episode)
+            .Where(role => role.Id == id)
+            .SingleOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<Role?> AddMovieRelation(Guid id, Guid movieId, CancellationToken cancellationToken)
+    {
+        var toUpdate = await GetByIdAsync(id, cancellationToken);
+        if (toUpdate == null) 
+            return null;
+
+        toUpdate.MovieId = movieId;
+
+        await _context.SaveChangesAsync(cancellationToken);
+        
+        return await _context.Roles
             .Include(role => role.Movie)
-            .Where(role => role.SeriesId == seriesId)
-            .ToListAsync(cancellationToken);
+            .Where(role => role.Id == id)
+            .SingleOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<Role?> AddSeriesRelation(Guid id, Guid seriesId, CancellationToken cancellationToken)
+    {
+        var toUpdate = await GetByIdAsync(id, cancellationToken);
+        if (toUpdate == null) 
+            return null;
+
+        toUpdate.SeriesId = seriesId;
+
+        await _context.SaveChangesAsync(cancellationToken);
+        
+        return await _context.Roles
+            .Include(role => role.Series)
+            .Where(role => role.Id == id)
+            .SingleOrDefaultAsync(cancellationToken);
+    }
 
     private static bool IsValid(RoleModel roleModel) => 
         !roleModel.Name.IsNullOrWhiteSpace();
