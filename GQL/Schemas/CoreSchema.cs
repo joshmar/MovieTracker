@@ -1,4 +1,5 @@
 ﻿using GraphQL.Types;
+using MovieTracker.GQL.Mutations;
 using MovieTracker.GQL.Queries;
 
 namespace MovieTracker.GQL.Schemas;
@@ -9,5 +10,6 @@ public class CoreSchema : Schema
         : base(serviceProvider)
     {
         Query = serviceProvider.GetRequiredService<CoreQuery>();
+        Mutation = serviceProvider.GetRequiredService<CoreMutation>();
     }
 }
