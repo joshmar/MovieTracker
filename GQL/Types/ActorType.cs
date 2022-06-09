@@ -17,23 +17,6 @@ public sealed class ActorType : ObjectGraphType<Actor>
 
         Field(actor => actor.Score, nullable: true).Description("Personal score for the actor.");
 
-        FieldAsync<ListGraphType<RoleType>, IDataLoaderResult<IEnumerable<Role>>>(
-            name: "roles",
-            description: "Roles of the actor",
-            resolve: context =>
-            {
-                var loader = dataLoaderAccessor.Context?
-                    .GetOrAddCollectionBatchLoader<Guid, Role>("GetRolesByActorId",
-                        async actorIds =>
-                        {
-                            var toReturnList = new List<Role>();
-                            foreach (var actorId in actorIds)
-                                toReturnList.AddRange(await roleService.GetByActorIdAsync(actorId));
-
-                            return toReturnList.ToLookup(x => x.Id);
-                        });
-                var result = loader?.LoadAsync(context.Source.Id);
-                return Task.FromResult(result);
-            });
+        FieldAsync<ListGraphType<RoleType>>(name: "roles", description: "Roles of the actor");
     }
 }
