@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using MovieTracker.Models;
-using MovieTracker.Models.Entities;
 using MovieTracker.Services.Interfaces;
 
 namespace MovieTracker.Controllers;
@@ -9,35 +8,35 @@ namespace MovieTracker.Controllers;
 [Route("[controller]")]
 public class ActorController : ControllerBase
 {
-    private readonly IActorService _service;
+    private readonly IActorRepository _repository;
 
-    public ActorController(IActorService service)
+    public ActorController(IActorRepository repository)
     {
-        _service = service;
+        _repository = repository;
     }
     
     [HttpGet("all")]
     public async Task<IActionResult> GetAsync(CancellationToken cancellationToken) => 
-        Ok((await _service.GetAllAsync(cancellationToken))
+        Ok((await _repository.GetAllAsync(cancellationToken))
             .Select(x => x));
 
     [HttpGet("by-id/{id:guid}")]
     public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken cancellationToken) => 
-        Ok(await _service.GetByIdAsync(id, cancellationToken));
+        Ok(await _repository.GetByIdAsync(id, cancellationToken));
 
     [HttpPost("create")]
     public async Task<IActionResult> CreateAsync(ActorModel actor, CancellationToken cancellationToken) => 
-        Created($"/GetById?id={(await _service.CreateAsync(actor, cancellationToken))?.Id}", actor);
+        Created($"/GetById?id={(await _repository.CreateAsync(actor, cancellationToken))?.Id}", actor);
 
     [HttpPut("update/{id:guid}")]
     public async Task<IActionResult> UpdateAsync(Guid id, ActorModel actor, CancellationToken cancellationToken) =>
-        await _service.UpdateAsync(id, actor, cancellationToken) ? NoContent() : NotFound();
+        await _repository.UpdateAsync(id, actor, cancellationToken) ? NoContent() : NotFound();
 
     [HttpDelete("delete/{id:guid}")]
     public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken) =>
-        await _service.DeleteAsync(id, cancellationToken) ? NoContent() : NotFound();
+        await _repository.DeleteAsync(id, cancellationToken) ? NoContent() : NotFound();
 
     [HttpPost("addRole/{actorId:Guid}/{roleId:Guid}")]
     public async Task<IActionResult> AddRoleById(Guid actorId, Guid roleId, CancellationToken cancellationToken) =>
-        await _service.AddRoleByRoleIdAsync(actorId, roleId, cancellationToken) ? NoContent() : NotFound();
+        await _repository.AddRoleByRoleIdAsync(actorId, roleId, cancellationToken) ? NoContent() : NotFound();
 }

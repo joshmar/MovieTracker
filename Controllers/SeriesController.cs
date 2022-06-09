@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MovieTracker.Models;
 using MovieTracker.Models.Entities;
 using MovieTracker.Services.Interfaces;
 
@@ -8,30 +9,30 @@ namespace MovieTracker.Controllers;
 [Route("[controller]")]
 public class SeriesController : ControllerBase
 {
-    private readonly ISeriesService _service;
+    private readonly ISeriesRepository _repository;
 
-    public SeriesController(ISeriesService service)
+    public SeriesController(ISeriesRepository repository)
     {
-        _service = service;
+        _repository = repository;
     }
     
     [HttpGet("all")]
     public async Task<IActionResult> GetAsync(CancellationToken cancellationToken) => 
-        Ok(await _service.GetAllAsync(cancellationToken));
+        Ok(await _repository.GetAllAsync(cancellationToken));
 
     [HttpGet("by-id/{id:guid}")]
     public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken cancellationToken) => 
-        Ok(await _service.GetByIdAsync(id, cancellationToken));
+        Ok(await _repository.GetByIdAsync(id, cancellationToken));
 
-    /*[HttpPost("create")]
-    public async Task<IActionResult> CreateAsync(Series series, CancellationToken cancellationToken) => 
-        Created($"/GetById?id={(await _service.CreateAsync(series, cancellationToken))?.Id}", series);
+    [HttpPost("create")]
+    public async Task<IActionResult> CreateAsync(SeriesModel series, CancellationToken cancellationToken) => 
+        Created($"/GetById?id={(await _repository.CreateAsync(series, cancellationToken))?.Id}", series);
 
-    [HttpPut("update")]
-    public async Task<IActionResult> UpdateAsync(Series series, CancellationToken cancellationToken) =>
-        await _service.UpdateAsync(series, cancellationToken) ? NoContent() : NotFound();*/
+    [HttpPut("update/{id:guid}")]
+    public async Task<IActionResult> UpdateAsync(Guid id, SeriesModel series, CancellationToken cancellationToken) =>
+        await _repository.UpdateAsync(id, series, cancellationToken) ? NoContent() : NotFound();
 
     [HttpDelete("delete/{id:guid}")]
     public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken) =>
-        await _service.DeleteAsync(id, cancellationToken) ? NoContent() : NotFound();
+        await _repository.DeleteAsync(id, cancellationToken) ? NoContent() : NotFound();
 }
