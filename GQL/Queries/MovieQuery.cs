@@ -6,9 +6,9 @@ namespace MovieTracker.GQL.Queries;
 
 public sealed class MovieQuery : ObjectGraphType
 {
-    public MovieQuery(IMovieService movieService)
+    public MovieQuery(IMovieRepository movieRepository)
     {
         FieldAsync<ListGraphType<MovieType>>("Movies",
-            resolve: async fieldContext => await movieService.GetAllAsync(fieldContext.CancellationToken));
+            resolve: async fieldContext => await movieRepository.GetAllAsync(fieldContext.CancellationToken));
     }
 }

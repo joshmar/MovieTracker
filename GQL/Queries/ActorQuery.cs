@@ -7,10 +7,10 @@ namespace MovieTracker.GQL.Queries;
 
 public sealed class ActorQuery : ObjectGraphType
 {
-    public ActorQuery(IActorService actorService)
+    public ActorQuery(IActorRepository actorRepository)
     {
         FieldAsync<ListGraphType<ActorType>>("actors", 
-            resolve: async fieldContext =>  await actorService.GetAllAsync(fieldContext.CancellationToken));
+            resolve: async fieldContext =>  await actorRepository.GetAllAsync(fieldContext.CancellationToken));
 
         FieldAsync<ActorType>("actor",
             arguments: new QueryArguments(new QueryArgument<NonNullGraphType<GuidGraphType>>
@@ -20,7 +20,7 @@ public sealed class ActorQuery : ObjectGraphType
             resolve: async fieldContext =>
             {
                 var id = fieldContext.GetArgument<Guid>("id");
-                return await actorService.GetByIdAsync(id, fieldContext.CancellationToken);
+                return await actorRepository.GetByIdAsync(id, fieldContext.CancellationToken);
             });
         
         FieldAsync<ListGraphType<ActorType>>("actorsByIds",
@@ -31,7 +31,7 @@ public sealed class ActorQuery : ObjectGraphType
             resolve: async fieldContext =>
             {
                 var id = fieldContext.GetArgument<IEnumerable<Guid>>("ids");
-                return await actorService.GetByIdsAsync(id, fieldContext.CancellationToken);
+                return await actorRepository.GetByIdsAsync(id, fieldContext.CancellationToken);
             });
     }
 }

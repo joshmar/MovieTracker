@@ -6,9 +6,9 @@ namespace MovieTracker.GQL.Queries;
 
 public sealed class RoleQuery : ObjectGraphType
 {
-    public RoleQuery(IRoleService roleService)
+    public RoleQuery(IRoleRepository roleRepository)
     {
         FieldAsync<ListGraphType<RoleType>>("Roles",
-            resolve: async fieldContext => await roleService.GetAllAsync(fieldContext.CancellationToken));
+            resolve: async fieldContext => await roleRepository.GetAllAsync(fieldContext.CancellationToken));
     }
 }

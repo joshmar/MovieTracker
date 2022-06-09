@@ -5,30 +5,30 @@ namespace MovieTracker.GQL.Queries;
 
 public sealed class CoreQuery : ObjectGraphType
 {
-    public CoreQuery(IActorService actorService, IEpisodeService episodeService, 
-        IMovieService movieService, IRoleService roleService, ISeriesService seriesService)
+    public CoreQuery(IActorRepository actorRepository, IEpisodeRepository episodeRepository, 
+        IMovieRepository movieRepository, IRoleRepository roleRepository, ISeriesRepository seriesRepository)
     {
-        foreach (var field in new ActorQuery(actorService).Fields)
+        foreach (var field in new ActorQuery(actorRepository).Fields)
         {
             this.AddField(field);
         }
 
-        foreach (var field in new EpisodeQuery(episodeService).Fields)
+        foreach (var field in new EpisodeQuery(episodeRepository).Fields)
         {
             this.AddField(field);
         }
         
-        foreach (var field in new MovieQuery(movieService).Fields)
+        foreach (var field in new MovieQuery(movieRepository).Fields)
         {
             this.AddField(field);
         }
         
-        foreach (var field in new RoleQuery(roleService).Fields)
+        foreach (var field in new RoleQuery(roleRepository).Fields)
         {
             this.AddField(field);
         }
         
-        foreach (var field in new SeriesQuery(seriesService).Fields)
+        foreach (var field in new SeriesQuery(seriesRepository).Fields)
         {
             this.AddField(field);
         }
