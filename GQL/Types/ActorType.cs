@@ -1,13 +1,11 @@
-﻿using GraphQL.DataLoader;
-using GraphQL.Types;
+﻿using GraphQL.Types;
 using MovieTracker.Models.Entities;
-using MovieTracker.Services.Interfaces;
 
 namespace MovieTracker.GQL.Types;
 
 public sealed class ActorType : ObjectGraphType<Actor>
 {
-    public ActorType(IRoleService roleService, IDataLoaderContextAccessor dataLoaderAccessor)
+    public ActorType()
     {
         Name = "Actor";
         Description = "Actor's basic information";

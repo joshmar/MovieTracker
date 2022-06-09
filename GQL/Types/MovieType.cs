@@ -1,13 +1,12 @@
 ﻿using GraphQL.DataLoader;
 using GraphQL.Types;
 using MovieTracker.Models.Entities;
-using MovieTracker.Services.Interfaces;
 
 namespace MovieTracker.GQL.Types;
 
 public sealed class MovieType : ObjectGraphType<Movie>
 {
-    public MovieType(IRoleService roleService, IDataLoaderContextAccessor dataLoaderAccessor)
+    public MovieType()
     {
         Name = "Movie";
         Description = "Movie's basic information";
@@ -20,21 +19,6 @@ public sealed class MovieType : ObjectGraphType<Movie>
         
         FieldAsync<ListGraphType<RoleType>, IDataLoaderResult<IEnumerable<Role>>>(
             name: "roles",
-            description: "Roles appearing in this movie.",
-            resolve: context =>
-            {
-                var loader = dataLoaderAccessor.Context?
-                    .GetOrAddCollectionBatchLoader<Guid, Role>("GetRolesByMovieId",
-                        async movieIds =>
-                        {
-                            var toReturnList = new List<Role>();
-                            foreach (var movieId in movieIds)
-                                toReturnList.AddRange(await roleService.GetByMovieIdAsync(movieId));
-
-                            return toReturnList.ToLookup(x => x.Id);
-                        });
-                var result = loader?.LoadAsync(context.Source.Id);
-                return Task.FromResult(result);
-            });
+            description: "Roles appearing in this movie.");
     }
 }

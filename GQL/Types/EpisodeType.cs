@@ -1,13 +1,11 @@
-﻿using GraphQL.DataLoader;
-using GraphQL.Types;
+﻿using GraphQL.Types;
 using MovieTracker.Models.Entities;
-using MovieTracker.Services.Interfaces;
 
 namespace MovieTracker.GQL.Types;
 
 public sealed class EpisodeType : ObjectGraphType<Episode>
 {
-    public EpisodeType(IRoleService roleService, IDataLoaderContextAccessor dataLoaderAccessor)
+    public EpisodeType()
     {
         Name = "Episode";
         Description = "Episode's basic information";
@@ -24,23 +22,8 @@ public sealed class EpisodeType : ObjectGraphType<Episode>
         Field(episode => episode.Score, nullable: true)
             .Description("An optional score to be given to the episode.");
 
-        FieldAsync<ListGraphType<RoleType>, IDataLoaderResult<IEnumerable<Role>>>(
+        FieldAsync<ListGraphType<RoleType>>(
             name: "roles",
-            description: "Roles appearing in this episode.",
-            resolve: context =>
-            {
-                var loader = dataLoaderAccessor.Context?
-                    .GetOrAddCollectionBatchLoader<Guid, Role>("GetRolesByEpisodeId",
-                        async episodeIds =>
-                        {
-                            var toReturnList = new List<Role>();
-                            foreach (var episodeId in episodeIds)
-                                toReturnList.AddRange(await roleService.GetByEpisodeIdAsync(episodeId));
-
-                            return toReturnList.ToLookup(x => x.Id);
-                        });
-                var result = loader?.LoadAsync(context.Source.Id);
-                return Task.FromResult(result);
-            });
+            description: "Roles appearing in this episode.");
     }
 }

@@ -17,7 +17,7 @@ public sealed class RoleType : ObjectGraphType<Role>
         //Relationships
         
         //Required:
-        Field(role => role.ActorId, nullable: false).Description("Actors Id.");
+        Field(role => role.ActorId, nullable: true).Description("Actors Id.");
         Field<ActorType>("Actor", "The linked actor.");
         
         //Optional:
