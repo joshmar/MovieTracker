@@ -1,8 +1,9 @@
-﻿using MovieTracker.Models.Entities;
+﻿using MovieTracker.Models;
+using MovieTracker.Models.Entities;
 
 namespace MovieTracker.Services.Interfaces;
 
-public interface IRoleService : ICrudMethods<Role>
+public interface IRoleService : ICrudMethods<Role, RoleModel>
 {
     public Task<IEnumerable<Role>> GetByActorIdAsync(Guid actorId, CancellationToken cancellationToken = default);
     public Task<IEnumerable<Role>> GetByEpisodeIdAsync(Guid episodeId, CancellationToken cancellationToken = default);

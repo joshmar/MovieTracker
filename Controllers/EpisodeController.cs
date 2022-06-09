@@ -23,13 +23,13 @@ public class EpisodeController : ControllerBase
     public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken cancellationToken) => 
         Ok(await _service.GetByIdAsync(id, cancellationToken));
 
-    [HttpPost("create")]
+    /*[HttpPost("create")]
     public async Task<IActionResult> CreateAsync(Episode episode, CancellationToken cancellationToken) => 
         Created($"/GetById?id={(await _service.CreateAsync(episode, cancellationToken))?.Id}", episode);
 
     [HttpPut("update")]
     public async Task<IActionResult> UpdateAsync(Episode episode, CancellationToken cancellationToken) =>
-        await _service.UpdateAsync(episode, cancellationToken) ? NoContent() : NotFound();
+        await _service.UpdateAsync(episode, cancellationToken) ? NoContent() : NotFound();*/
 
     [HttpDelete("delete/{id:guid}")]
     public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken) =>

@@ -23,13 +23,13 @@ public class RoleController : ControllerBase
     public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken cancellationToken) => 
         Ok(await _service.GetByIdAsync(id, cancellationToken));
 
-    [HttpPost("create")]
+    /*[HttpPost("create")]
     public async Task<IActionResult> CreateAsync(Role role, CancellationToken cancellationToken) => 
         Created($"/GetById?id={(await _service.CreateAsync(role, cancellationToken))?.Id}", role);
 
     [HttpPut("update")]
     public async Task<IActionResult> UpdateAsync(Role role, CancellationToken cancellationToken) =>
-        await _service.UpdateAsync(role, cancellationToken) ? NoContent() : NotFound();
+        await _service.UpdateAsync(role, cancellationToken) ? NoContent() : NotFound();*/
 
     [HttpDelete("delete/{id:guid}")]
     public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken) =>

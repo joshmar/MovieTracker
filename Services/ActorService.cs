@@ -1,6 +1,6 @@
-﻿using System.Runtime.CompilerServices;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MovieTracker.Extension;
+using MovieTracker.Models;
 using MovieTracker.Models.Entities;
 using MovieTracker.Services.Interfaces;
 
@@ -9,40 +9,45 @@ namespace MovieTracker.Services;
 public class ActorService : IActorService
 {
     private readonly MovieTrackerContext _context;
+    private readonly IRoleService _roleService;
 
-    public ActorService(MovieTrackerContext context)
+    public ActorService(MovieTrackerContext context, IRoleService roleService)
     {
         _context = context;
+        _roleService = roleService;
     }
 
     public async Task<List<Actor>> GetAllAsync(CancellationToken cancellationToken) => 
-        await _context.Actors.ToListAsync(cancellationToken);
+        await _context.Actors.Include(actor => actor.Roles).ToListAsync(cancellationToken);
 
     public async Task<Actor?> GetByIdAsync(Guid id, CancellationToken cancellationToken) => 
         await _context.Actors.FindAsync(new object?[] { id }, cancellationToken);
     
     public async Task<IEnumerable<Actor?>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken) => 
-        await _context.Actors.Where(actor => ids.Contains(actor.Id)).ToListAsync(cancellationToken);
+        await _context.Actors.Where(actor => ids.Contains(actor.Id)).Include(x => x.Roles).ToListAsync(cancellationToken);
 
-    public async Task<Actor?> CreateAsync(Actor toCreate, CancellationToken cancellationToken)
+    public async Task<Actor?> CreateAsync(ActorModel toCreate, CancellationToken cancellationToken)
     {
-        if (!IsValid(toCreate))
+        var newActor = new Actor(toCreate.FirstName, toCreate.LastName, toCreate.Score);
+        if (!IsValid(newActor))
         {
             return null;
         }
 
-        await _context.Actors.AddAsync(toCreate, cancellationToken);
+        await _context.Actors.AddAsync(newActor, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
         
-        return toCreate;
+        return newActor;
     }
 
-    public async Task<bool> UpdateAsync(Actor toUpdate, CancellationToken cancellationToken)
+    public async Task<bool> UpdateAsync(Guid id, ActorModel toUpdate, CancellationToken cancellationToken)
     {
-        if (await GetByIdAsync(toUpdate.Id, cancellationToken) == null || !IsValid(toUpdate)) 
+        var toUpdateEntity = await GetByIdAsync(id, cancellationToken);
+        if (toUpdateEntity == null || !IsValid(toUpdateEntity)) 
             return false;
+
+        toUpdateEntity.Update(toUpdate);
         
-        _context.Actors.Update(toUpdate);
         await _context.SaveChangesAsync(cancellationToken);
         return true;
     }
@@ -54,6 +59,28 @@ public class ActorService : IActorService
             return false;
 
         _context.Actors.Remove(toDelete);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return true;
+    }
+
+    public async Task<bool> AddRoleByRoleIdAsync(Guid actorId, Guid roleId, CancellationToken cancellationToken)
+    {
+        var roleToAdd = await _roleService.GetByIdAsync(roleId, cancellationToken);
+
+        if (roleToAdd == null)
+            return false;
+
+        var actorToUpdate = await GetByIdAsync(actorId, cancellationToken);
+
+        if (actorToUpdate == null)
+            return false;
+        
+        actorToUpdate.Roles?.Add(roleToAdd);
+        roleToAdd.Actor = actorToUpdate;
+        roleToAdd.ActorId = actorId;
+
+        _context.Update(actorToUpdate);
         await _context.SaveChangesAsync(cancellationToken);
 
         return true;

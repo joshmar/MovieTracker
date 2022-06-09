@@ -1,8 +1,9 @@
-﻿using MovieTracker.Models.Entities;
+﻿using MovieTracker.Models;
+using MovieTracker.Models.Entities;
 
 namespace MovieTracker.Services.Interfaces;
 
-public interface ISeriesService : ICrudMethods<Series>
+public interface ISeriesService : ICrudMethods<Series, SeriesModel>
 {
     
 }

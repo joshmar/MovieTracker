@@ -23,13 +23,13 @@ public class MovieController : ControllerBase
     public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken cancellationToken) => 
         Ok(await _service.GetByIdAsync(id, cancellationToken));
 
-    [HttpPost("create")]
+    /*[HttpPost("create")]
     public async Task<IActionResult> CreateAsync(Movie movie, CancellationToken cancellationToken) => 
         Created($"/GetById?id={(await _service.CreateAsync(movie, cancellationToken))?.Id}", movie);
 
     [HttpPut("update")]
     public async Task<IActionResult> UpdateAsync(Movie movie, CancellationToken cancellationToken) =>
-        await _service.UpdateAsync(movie, cancellationToken) ? NoContent() : NotFound();
+        await _service.UpdateAsync(movie, cancellationToken) ? NoContent() : NotFound();*/
 
     [HttpDelete("delete/{id:guid}")]
     public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken) =>
