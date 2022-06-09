@@ -35,8 +35,4 @@ public class ActorController : ControllerBase
     [HttpDelete("delete/{id:guid}")]
     public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken) =>
         await _repository.DeleteAsync(id, cancellationToken) ? NoContent() : NotFound();
-
-    [HttpPost("addRole/{actorId:Guid}/{roleId:Guid}")]
-    public async Task<IActionResult> AddRoleById(Guid actorId, Guid roleId, CancellationToken cancellationToken) =>
-        await _repository.AddRoleByRoleIdAsync(actorId, roleId, cancellationToken) ? NoContent() : NotFound();
 }

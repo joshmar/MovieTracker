@@ -16,49 +16,49 @@ public class SeriesRepository : ISeriesRepository
     }
     
     public async Task<List<Series>> GetAllAsync(CancellationToken cancellationToken) =>
-        await _context.Series.ToListAsync(cancellationToken);
+        await _context.Series
+            .Include(series => series.Roles)
+            .Include(series => series.Episodes)
+            .ToListAsync(cancellationToken);
 
     public async Task<Series?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
-        await _context.Series.FindAsync(new object?[] { id }, cancellationToken);
+        await _context.Series
+            .Include(series => series.Roles)
+            .Include(series => series.Episodes)
+            .Where(series => series.Id == id )
+            .SingleOrDefaultAsync(cancellationToken);
 
     public async Task<IEnumerable<Series?>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken) => 
-        await _context.Series.Where(series => ids.Contains(series.Id)).ToListAsync(cancellationToken);
+        await _context.Series
+            .Include(series => series.Roles)
+            .Include(series => series.Episodes)
+            .Where(series => ids.Contains(series.Id))
+            .ToListAsync(cancellationToken);
 
-    public Task<Series?> CreateAsync(SeriesModel toCreate, CancellationToken cancellationToken = default)
+    public async Task<Series?> CreateAsync(SeriesModel createModel, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> UpdateAsync(Guid id, SeriesModel toUpdate, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Series?> CreateAsync(Series toCreate, CancellationToken cancellationToken)
-    {
-        if (!IsValid(toCreate))
-        {
+        if (!IsValid(createModel))
             return null;
-        }
 
-        await _context.Series.AddAsync(toCreate, cancellationToken);
+        var series = new Series(createModel.Title, createModel.Watched, createModel.Description, createModel.Score);
+        
+        await _context.Series.AddAsync(series, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
         
-        return toCreate;
+        return series;
     }
 
-    public async Task<bool> UpdateAsync(Series toUpdate, CancellationToken cancellationToken)
+    public async Task<bool> UpdateAsync(Guid id, SeriesModel updateModel, CancellationToken cancellationToken = default)
     {
-        if (await GetByIdAsync(toUpdate.Id, cancellationToken) == null || !IsValid(toUpdate))
+        var toUpdate = await GetByIdAsync(id, cancellationToken);
+        if ( toUpdate == null || !IsValid(updateModel))
             return false;
 
-        toUpdate.UpdateEpisodeWatched();
-        
-        _context.Series.Update(toUpdate);
+        toUpdate.Update(updateModel);
         await _context.SaveChangesAsync(cancellationToken);
         return true;
     }
-
+    
     public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         var toDelete = await GetByIdAsync(id, cancellationToken);
@@ -71,6 +71,6 @@ public class SeriesRepository : ISeriesRepository
         return true;
     }
     
-    private static bool IsValid(Series series) =>
-        !series.Title.IsNullOrWhiteSpace();
+    private static bool IsValid(SeriesModel seriesModel) =>
+        !seriesModel.Title.IsNullOrWhiteSpace();
 }

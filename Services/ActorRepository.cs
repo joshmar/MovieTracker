@@ -18,35 +18,42 @@ public class ActorRepository : IActorRepository
     }
 
     public async Task<List<Actor>> GetAllAsync(CancellationToken cancellationToken) => 
-        await _context.Actors.Include(actor => actor.Roles).ToListAsync(cancellationToken);
+        await _context.Actors
+            .Include(actor => actor.Roles)
+            .ToListAsync(cancellationToken);
 
     public async Task<Actor?> GetByIdAsync(Guid id, CancellationToken cancellationToken) => 
-        await _context.Actors.FindAsync(new object?[] { id }, cancellationToken);
+        await _context.Actors
+            .Include(actor => actor.Roles)
+            .Where(actor => actor.Id == id)
+            .SingleOrDefaultAsync(cancellationToken);
     
     public async Task<IEnumerable<Actor?>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken) => 
-        await _context.Actors.Where(actor => ids.Contains(actor.Id)).Include(x => x.Roles).ToListAsync(cancellationToken);
+        await _context.Actors
+            .Include(actor => actor.Roles)
+            .Where(actor => ids.Contains(actor.Id))
+            .ToListAsync(cancellationToken);
 
-    public async Task<Actor?> CreateAsync(ActorModel toCreate, CancellationToken cancellationToken)
+    public async Task<Actor?> CreateAsync(ActorModel createModel, CancellationToken cancellationToken)
     {
-        var newActor = new Actor(toCreate.FirstName, toCreate.LastName, toCreate.Score);
-        if (!IsValid(newActor))
-        {
+        if (!IsValid(createModel))
             return null;
-        }
 
-        await _context.Actors.AddAsync(newActor, cancellationToken);
+        var actor = new Actor(createModel.FirstName, createModel.LastName, createModel.Score);
+        
+        await _context.Actors.AddAsync(actor, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
         
-        return newActor;
+        return actor;
     }
 
-    public async Task<bool> UpdateAsync(Guid id, ActorModel toUpdate, CancellationToken cancellationToken)
+    public async Task<bool> UpdateAsync(Guid id, ActorModel updateModel, CancellationToken cancellationToken)
     {
-        var toUpdateEntity = await GetByIdAsync(id, cancellationToken);
-        if (toUpdateEntity == null || !IsValid(toUpdateEntity)) 
+        var toUpdate = await GetByIdAsync(id, cancellationToken);
+        if (toUpdate == null || !IsValid(updateModel)) 
             return false;
 
-        toUpdateEntity.Update(toUpdate);
+        toUpdate.Update(updateModel);
         
         await _context.SaveChangesAsync(cancellationToken);
         return true;
@@ -64,28 +71,6 @@ public class ActorRepository : IActorRepository
         return true;
     }
 
-    public async Task<bool> AddRoleByRoleIdAsync(Guid actorId, Guid roleId, CancellationToken cancellationToken)
-    {
-        var roleToAdd = await _roleRepository.GetByIdAsync(roleId, cancellationToken);
-
-        if (roleToAdd == null)
-            return false;
-
-        var actorToUpdate = await GetByIdAsync(actorId, cancellationToken);
-
-        if (actorToUpdate == null)
-            return false;
-        
-        actorToUpdate.Roles?.Add(roleToAdd);
-        roleToAdd.Actor = actorToUpdate;
-        roleToAdd.ActorId = actorId;
-
-        _context.Update(actorToUpdate);
-        await _context.SaveChangesAsync(cancellationToken);
-
-        return true;
-    }
-
-    private static bool IsValid(Actor actor) =>
-        !actor.FirstName.IsNullOrWhiteSpace() && !actor.LastName.IsNullOrWhiteSpace();
+    private static bool IsValid(ActorModel actorModel) =>
+        !actorModel.FirstName.IsNullOrWhiteSpace() && !actorModel.LastName.IsNullOrWhiteSpace();
 }

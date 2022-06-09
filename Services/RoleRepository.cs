@@ -16,43 +16,54 @@ public class RoleRepository : IRoleRepository
     }
     
     public async Task<List<Role>> GetAllAsync(CancellationToken cancellationToken) =>
-        await _context.Roles.ToListAsync(cancellationToken);
+        await _context.Roles
+            .Include(role => role.Actor)
+            .Include(role => role.Series)
+            .Include(role => role.Episode)
+            .Include(role => role.Movie)
+            .ToListAsync(cancellationToken);
 
     public async Task<Role?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
-        await _context.Roles.FindAsync(new object?[] { id }, cancellationToken);
+        await _context.Roles
+            .Include(role => role.Actor)
+            .Include(role => role.Series)
+            .Include(role => role.Episode)
+            .Include(role => role.Movie)
+            .Where( role => role.Id == id )
+            .SingleOrDefaultAsync(cancellationToken);
 
     public async Task<IEnumerable<Role?>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken) => 
-        await _context.Roles.Where(role => ids.Contains(role.Id)).ToListAsync(cancellationToken);
+        await _context.Roles
+            .Include(role => role.Actor)
+            .Include(role => role.Series)
+            .Include(role => role.Episode)
+            .Include(role => role.Movie)
+            .Where(role => ids.Contains(role.Id))
+            .ToListAsync(cancellationToken);
 
-    public Task<Role?> CreateAsync(RoleModel toCreate, CancellationToken cancellationToken = default)
+    public async Task<Role?> CreateAsync(RoleModel createModel, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> UpdateAsync(Guid id, RoleModel toUpdate, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Role?> CreateAsync(Role toCreate, CancellationToken cancellationToken)
-    {
-        if (!IsValid(toCreate))
-        {
+        if (!IsValid(createModel))
             return null;
-        }
 
-        await _context.Roles.AddAsync(toCreate, cancellationToken);
+        var role = new Role(name: createModel.Name, actorId: createModel.ActorId,
+            seriesId: createModel.SeriesId, episodeId: createModel.EpisodeId,
+            movieId: createModel.MovieId, description: createModel.Description,
+            score: createModel.Score);
+
+        await _context.Roles.AddAsync(role, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
         
-        return await GetByIdAsync(toCreate.Id, cancellationToken);
+        return role;
     }
 
-    public async Task<bool> UpdateAsync(Role toUpdate, CancellationToken cancellationToken)
+    public async Task<bool> UpdateAsync(Guid id, RoleModel updateModel, CancellationToken cancellationToken = default)
     {
-        if (await GetByIdAsync(toUpdate.Id, cancellationToken) == null || !IsValid(toUpdate)) 
+        var toUpdate = await GetByIdAsync(id, cancellationToken);
+        if (toUpdate == null || !IsValid(updateModel)) 
             return false;
         
-        _context.Roles.Update(toUpdate);
+        toUpdate.Update(updateModel);
         await _context.SaveChangesAsync(cancellationToken);
         return true;
     }
@@ -69,18 +80,42 @@ public class RoleRepository : IRoleRepository
         return true;
     }
     
-    public async Task<IEnumerable<Role>> GetByActorIdAsync(Guid actorId, CancellationToken cancellationToken) => 
-        await _context.Roles.Where(role => role.ActorId == actorId).ToListAsync(cancellationToken);
+    public async Task<IEnumerable<Role>> AddActorRelation(Guid actorId, CancellationToken cancellationToken) => 
+        await _context.Roles
+            .Include(role => role.Actor)
+            .Include(role => role.Series)
+            .Include(role => role.Episode)
+            .Include(role => role.Movie)
+            .Where(role => role.ActorId == actorId)
+            .ToListAsync(cancellationToken);
 
-    public async Task<IEnumerable<Role>> GetByEpisodeIdAsync(Guid episodeId, CancellationToken cancellationToken) => 
-        await _context.Roles.Where(role => role.EpisodeId == episodeId).ToListAsync(cancellationToken);
+    public async Task<IEnumerable<Role>> AddEpisodeRelation(Guid episodeId, CancellationToken cancellationToken) => 
+        await _context.Roles
+            .Include(role => role.Actor)
+            .Include(role => role.Series)
+            .Include(role => role.Episode)
+            .Include(role => role.Movie)
+            .Where(role => role.EpisodeId == episodeId)
+            .ToListAsync(cancellationToken);
 
-    public async Task<IEnumerable<Role>> GetByMovieIdAsync(Guid movieId, CancellationToken cancellationToken) => 
-        await _context.Roles.Where(role => role.MovieId == movieId).ToListAsync(cancellationToken);
+    public async Task<IEnumerable<Role>> AddMovieRelation(Guid movieId, CancellationToken cancellationToken) => 
+        await _context.Roles
+            .Include(role => role.Actor)
+            .Include(role => role.Series)
+            .Include(role => role.Episode)
+            .Include(role => role.Movie)
+            .Where(role => role.MovieId == movieId)
+            .ToListAsync(cancellationToken);
 
-    public async Task<IEnumerable<Role>> GetBySeriesIdAsync(Guid seriesId, CancellationToken cancellationToken) => 
-        await _context.Roles.Where(role => role.SeriesId == seriesId).ToListAsync(cancellationToken);
+    public async Task<IEnumerable<Role>> AddSeriesRelation(Guid seriesId, CancellationToken cancellationToken) => 
+        await _context.Roles
+            .Include(role => role.Actor)
+            .Include(role => role.Series)
+            .Include(role => role.Episode)
+            .Include(role => role.Movie)
+            .Where(role => role.SeriesId == seriesId)
+            .ToListAsync(cancellationToken);
 
-    private static bool IsValid(Role role) => 
-        !role.Name.IsNullOrWhiteSpace();
+    private static bool IsValid(RoleModel roleModel) => 
+        !roleModel.Name.IsNullOrWhiteSpace();
 }

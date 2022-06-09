@@ -15,17 +15,23 @@ public class Episode
 
     [Obsolete("EF Required", true)]
     public Episode() { }
-    public Episode(string title, bool watched, Series series, string? description = null, byte? score = null, ICollection<Role>? roles = null)
+    public Episode(string title, bool watched, Guid seriesId, string? description = null, byte? score = null)
     {
         Id = Guid.NewGuid();
         Title = title;
         Watched = watched;
-        Series = series;
-        SeriesId = series.Id;
+        SeriesId = seriesId;
         Description = description;
         Score = score;
-        Roles = roles;
     }
-    
-    
+
+
+    public void Update(EpisodeModel updateModel)
+    {
+        Title = updateModel.Title;
+        Watched = updateModel.Watched;
+        SeriesId = updateModel.SeriesId;
+        Description = updateModel.Description ?? Description;
+        Score = updateModel.Score ?? Score;
+    }
 }

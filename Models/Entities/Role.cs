@@ -22,41 +22,26 @@ public class Role
 
     [Obsolete("EF Required", true)]
     public Role() { }
-    public Role(string name, Actor actor, Episode episode, string? description = null, byte? score = null)
+    public Role(string name, Guid? actorId, Guid? episodeId, Guid? seriesId, Guid? movieId, string? description = null, byte? score = null)
     {
         Id = Guid.NewGuid();
         Name = name;
-        ActorId = actor.Id;
-        Actor = actor;
+        ActorId = actorId;
         Description = description;
         Score = score;
-        Episode = episode;
-        EpisodeId = episode.Id;
-        Series = episode.Series;
-        SeriesId = episode.SeriesId;
+        EpisodeId = episodeId;
+        SeriesId = seriesId;
+        MovieId = movieId;
     }
-    
-    public Role(string name, Actor actor, Movie movie, string? description = null, byte? score = null)
+
+    public void Update(RoleModel roleModel)
     {
-        Id = Guid.NewGuid();
-        Name = name;
-        ActorId = actor.Id;
-        Actor = actor;
-        Description = description;
-        Score = score;
-        Movie = movie;
-        MovieId = movie.Id;
-    }
-    
-    public Role(string name, Actor actor, Series series, string? description = null, byte? score = null)
-    {
-        Id = Guid.NewGuid();
-        Name = name;
-        ActorId = actor.Id;
-        Actor = actor;
-        Description = description;
-        Score = score;
-        Series = series;
-        SeriesId = series.Id;
+        Name = roleModel.Name;
+        Description = roleModel.Description ?? Description;
+        Score = roleModel.Score ?? Score;
+        ActorId = roleModel.ActorId ?? ActorId;
+        EpisodeId = roleModel.EpisodeId ?? EpisodeId;
+        MovieId = roleModel.MovieId ?? MovieId;
+        SeriesId = roleModel.SeriesId ?? SeriesId;
     }
 }

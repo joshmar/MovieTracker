@@ -14,26 +14,20 @@ public class Series
 
     [Obsolete("EF Required", true)]
     public Series() { }
-    public Series(string title, bool watched, string? description = null, byte? score = null, ICollection<Episode>? episodes = null, ICollection<Role>? roles = null)
+    public Series(string title, bool watched, string? description = null, byte? score = null)
     {
         Id = Guid.NewGuid();
         Title = title;
         Watched = watched;
         Description = description;
         Score = score;
-        Episodes = episodes;
-        Roles = roles;
-        
-        UpdateEpisodeWatched();
     }
-
-    public void UpdateEpisodeWatched()
+    
+    public void Update(SeriesModel updateModel)
     {
-        if (!Watched || Episodes == null) 
-            return;
-        foreach (var episode in Episodes)
-        {
-            episode.Watched = true;
-        }
+        Title = updateModel.Title;
+        Watched = updateModel.Watched;
+        Description = updateModel.Description ?? Description;
+        Score = updateModel.Score ?? Score;
     }
 }

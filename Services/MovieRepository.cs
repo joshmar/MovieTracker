@@ -16,43 +16,43 @@ public class MovieRepository : IMovieRepository
     }
     
     public async Task<List<Movie>> GetAllAsync(CancellationToken cancellationToken) =>
-        await _context.Movies.ToListAsync(cancellationToken);
+        await _context.Movies
+            .Include(movie => movie.Roles)
+            .ToListAsync(cancellationToken);
 
     public async Task<Movie?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
-        await _context.Movies.FindAsync(new object?[] { id }, cancellationToken);
+        await _context.Movies
+            .Include(movie => movie.Roles)
+            .Where(movie => movie.Id == id)
+            .SingleOrDefaultAsync(cancellationToken);
     
     public async Task<IEnumerable<Movie?>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken) => 
-        await _context.Movies.Where(movie => ids.Contains(movie.Id)).ToListAsync(cancellationToken);
+        await _context.Movies
+            .Include(movie => movie.Roles)
+            .Where(movie => ids.Contains(movie.Id))
+            .ToListAsync(cancellationToken);
 
-    public Task<Movie?> CreateAsync(MovieModel toCreate, CancellationToken cancellationToken = default)
+    public async Task<Movie?> CreateAsync(MovieModel createModel, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> UpdateAsync(Guid id, MovieModel toUpdate, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Movie?> CreateAsync(Movie toCreate, CancellationToken cancellationToken)
-    {
-        if (!IsValid(toCreate))
-        {
+        if (!IsValid(createModel))
             return null;
-        }
 
-        await _context.Movies.AddAsync(toCreate, cancellationToken);
+        var movie = new Movie(createModel.Title, createModel.Watched, createModel.Description, createModel.Score);
+        
+        await _context.Movies.AddAsync(movie, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
         
-        return toCreate;
+        return movie;
     }
 
-    public async Task<bool> UpdateAsync(Movie toUpdate, CancellationToken cancellationToken)
+    public async Task<bool> UpdateAsync(Guid id, MovieModel updateModel, CancellationToken cancellationToken = default)
     {
-        if (await GetByIdAsync(toUpdate.Id, cancellationToken) == null || !IsValid(toUpdate))
+        var toUpdate = await GetByIdAsync(id, cancellationToken);
+        if ( toUpdate == null || !IsValid(updateModel))
             return false;
 
-        _context.Movies.Update(toUpdate);
+        toUpdate.Update(updateModel);
+        
         await _context.SaveChangesAsync(cancellationToken);
         return true;
     }
@@ -69,6 +69,6 @@ public class MovieRepository : IMovieRepository
         return true;
     }
 
-    private static bool IsValid(Movie movie) => 
-        !movie.Title.IsNullOrWhiteSpace();
+    private static bool IsValid(MovieModel movieModel) => 
+        !movieModel.Title.IsNullOrWhiteSpace();
 }

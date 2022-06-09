@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MovieTracker.Extension;
+using MovieTracker.GQL.Queries;
 using MovieTracker.Models;
 using MovieTracker.Models.Entities;
 using MovieTracker.Services.Interfaces;
@@ -16,44 +17,46 @@ public class EpisodeRepository : IEpisodeRepository
     }
 
     public async Task<List<Episode>> GetAllAsync(CancellationToken cancellationToken) =>
-        await _context.Episodes.Include(episode => episode.Roles).ToListAsync(cancellationToken);
+        await _context.Episodes
+            .Include(episode => episode.Roles)
+            .Include(episode => episode.Series)
+            .ToListAsync(cancellationToken);
 
     public async Task<Episode?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
-        await _context.Episodes.FindAsync(new object?[] { id }, cancellationToken);
+        await _context.Episodes
+            .Include(episode => episode.Roles)
+            .Include(episode => episode.Series)
+            .Where(episode => episode.Id == id)
+            .SingleOrDefaultAsync(cancellationToken);
 
     public async Task<IEnumerable<Episode?>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken) => 
-        await _context.Episodes.Where(episode => ids.Contains(episode.Id)).ToListAsync(cancellationToken);
+        await _context.Episodes
+            .Include(episode => episode.Roles)
+            .Include(episode => episode.Series)
+            .Where(episode => ids.Contains(episode.Id))
+            .ToListAsync(cancellationToken);
 
-    public Task<Episode?> CreateAsync(EpisodeModel toCreate, CancellationToken cancellationToken = default)
+    public async Task<Episode?> CreateAsync(EpisodeModel createModel, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> UpdateAsync(Guid id, EpisodeModel toUpdate, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Episode?> CreateAsync(Episode toCreate, CancellationToken cancellationToken)
-    {
-        if (!IsValid(toCreate))
-        {
+        if (!IsValid(createModel))
             return null;
-        }
 
-        await _context.Episodes.AddAsync(toCreate, cancellationToken);
+        var episode = new Episode(createModel.Title, createModel.Watched, createModel.SeriesId, createModel.Description, createModel.Score);
+        await _context.Episodes.AddAsync(episode, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
         
-        return toCreate;
+        return episode;
     }
 
-    public async Task<bool> UpdateAsync(Episode toUpdate, CancellationToken cancellationToken)
+    public async Task<bool> UpdateAsync(Guid id, EpisodeModel updateModel, CancellationToken cancellationToken = default)
     {
-        if (await GetByIdAsync(toUpdate.Id, cancellationToken) == null || !IsValid(toUpdate)) 
+        var toUpdate = await GetByIdAsync(id, cancellationToken);
+        if (toUpdate == null || !IsValid(updateModel)) 
             return false;
         
-        _context.Episodes.Update(toUpdate);
+        toUpdate.Update(updateModel);
         await _context.SaveChangesAsync(cancellationToken);
+        
         return true;
     }
 
@@ -72,6 +75,6 @@ public class EpisodeRepository : IEpisodeRepository
     public async Task<IEnumerable<Episode>> GetBySeriesIdAsync(Guid id, CancellationToken cancellationToken) =>
         await _context.Episodes.Where(episode => episode.SeriesId == id).ToListAsync(cancellationToken);
 
-    private static bool IsValid(Episode episode) =>
-        episode.SeriesId == episode.Series.Id && !episode.Title.IsNullOrWhiteSpace();
+    private static bool IsValid(EpisodeModel episodeModel) =>
+        !episodeModel.Title.IsNullOrWhiteSpace();
 }
