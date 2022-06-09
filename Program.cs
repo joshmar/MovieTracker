@@ -23,15 +23,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services
-    .AddScoped<IActorService, ActorService>();
+    .AddScoped<IActorRepository, ActorRepository>();
 builder.Services
-    .AddScoped<IEpisodeService, EpisodeService>();
+    .AddScoped<IEpisodeRepository, EpisodeRepository>();
 builder.Services
-    .AddScoped<IMovieService, MovieService>();
+    .AddScoped<IMovieRepository, MovieRepository>();
 builder.Services
-    .AddScoped<IRoleService, RoleService>();
+    .AddScoped<IRoleRepository, RoleRepository>();
 builder.Services
-    .AddScoped<ISeriesService, SeriesService>();
+    .AddScoped<ISeriesRepository, SeriesRepository>();
 
 builder.Services.AddScoped<IServiceProvider>(provider => 
     new FuncServiceProvider(provider.GetRequiredService));

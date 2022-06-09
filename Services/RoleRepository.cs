@@ -1,15 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MovieTracker.Extension;
+using MovieTracker.Models;
 using MovieTracker.Models.Entities;
 using MovieTracker.Services.Interfaces;
 
 namespace MovieTracker.Services;
 
-public class RoleService : IRoleService
+public class RoleRepository : IRoleRepository
 {
     private readonly MovieTrackerContext _context;
 
-    public RoleService(MovieTrackerContext context)
+    public RoleRepository(MovieTrackerContext context)
     {
         _context = context;
     }
@@ -22,6 +23,16 @@ public class RoleService : IRoleService
 
     public async Task<IEnumerable<Role?>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken) => 
         await _context.Roles.Where(role => ids.Contains(role.Id)).ToListAsync(cancellationToken);
+
+    public Task<Role?> CreateAsync(RoleModel toCreate, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> UpdateAsync(Guid id, RoleModel toUpdate, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
 
     public async Task<Role?> CreateAsync(Role toCreate, CancellationToken cancellationToken)
     {
@@ -70,19 +81,6 @@ public class RoleService : IRoleService
     public async Task<IEnumerable<Role>> GetBySeriesIdAsync(Guid seriesId, CancellationToken cancellationToken) => 
         await _context.Roles.Where(role => role.SeriesId == seriesId).ToListAsync(cancellationToken);
 
-    private static bool IsValid(Role role)
-    {
-        var actorValidation = role.ActorId != Guid.Empty
-                              && role.Actor.Id == role.ActorId;
-
-        if (!role.HasAppearance())
-            return actorValidation;
-
-        var episodeAndSeriesValidation = role.AppearsInEpisodeAndSeries() || role.AppearsInSeries();
-        
-        if (!role.AppearsInMovie())
-            return actorValidation && episodeAndSeriesValidation;
-
-        return actorValidation && !episodeAndSeriesValidation && !role.AppearsInEpisode();
-    }
+    private static bool IsValid(Role role) => 
+        !role.Name.IsNullOrWhiteSpace();
 }

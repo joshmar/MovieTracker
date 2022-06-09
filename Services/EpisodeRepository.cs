@@ -1,28 +1,39 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MovieTracker.Extension;
+using MovieTracker.Models;
 using MovieTracker.Models.Entities;
 using MovieTracker.Services.Interfaces;
 
 namespace MovieTracker.Services;
 
-public class EpisodeService : IEpisodeService
+public class EpisodeRepository : IEpisodeRepository
 {
     private readonly MovieTrackerContext _context;
 
-    public EpisodeService(MovieTrackerContext context)
+    public EpisodeRepository(MovieTrackerContext context)
     {
         _context = context;
     }
 
     public async Task<List<Episode>> GetAllAsync(CancellationToken cancellationToken) =>
-        await _context.Episodes.ToListAsync(cancellationToken);
+        await _context.Episodes.Include(episode => episode.Roles).ToListAsync(cancellationToken);
 
     public async Task<Episode?> GetByIdAsync(Guid id, CancellationToken cancellationToken) =>
         await _context.Episodes.FindAsync(new object?[] { id }, cancellationToken);
 
     public async Task<IEnumerable<Episode?>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken) => 
         await _context.Episodes.Where(episode => ids.Contains(episode.Id)).ToListAsync(cancellationToken);
-    
+
+    public Task<Episode?> CreateAsync(EpisodeModel toCreate, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> UpdateAsync(Guid id, EpisodeModel toUpdate, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<Episode?> CreateAsync(Episode toCreate, CancellationToken cancellationToken)
     {
         if (!IsValid(toCreate))

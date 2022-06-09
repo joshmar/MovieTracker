@@ -3,7 +3,7 @@ using MovieTracker.Models.Entities;
 
 namespace MovieTracker.Services.Interfaces;
 
-public interface IMovieService : ICrudMethods<Movie, MovieModel>
+public interface IMovieRepository : ICrudMethods<Movie, MovieModel>
 {
     
 }

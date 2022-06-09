@@ -3,7 +3,7 @@ using MovieTracker.Models.Entities;
 
 namespace MovieTracker.Services.Interfaces;
 
-public interface IRoleService : ICrudMethods<Role, RoleModel>
+public interface IRoleRepository : ICrudMethods<Role, RoleModel>
 {
     public Task<IEnumerable<Role>> GetByActorIdAsync(Guid actorId, CancellationToken cancellationToken = default);
     public Task<IEnumerable<Role>> GetByEpisodeIdAsync(Guid episodeId, CancellationToken cancellationToken = default);

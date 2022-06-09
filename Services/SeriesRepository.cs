@@ -1,15 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MovieTracker.Extension;
+using MovieTracker.Models;
 using MovieTracker.Models.Entities;
 using MovieTracker.Services.Interfaces;
 
 namespace MovieTracker.Services;
 
-public class SeriesService : ISeriesService
+public class SeriesRepository : ISeriesRepository
 {
     private readonly MovieTrackerContext _context;
 
-    public SeriesService(MovieTrackerContext context)
+    public SeriesRepository(MovieTrackerContext context)
     {
         _context = context;
     }
@@ -22,7 +23,17 @@ public class SeriesService : ISeriesService
 
     public async Task<IEnumerable<Series?>> GetByIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken) => 
         await _context.Series.Where(series => ids.Contains(series.Id)).ToListAsync(cancellationToken);
-    
+
+    public Task<Series?> CreateAsync(SeriesModel toCreate, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> UpdateAsync(Guid id, SeriesModel toUpdate, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<Series?> CreateAsync(Series toCreate, CancellationToken cancellationToken)
     {
         if (!IsValid(toCreate))

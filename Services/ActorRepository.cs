@@ -6,15 +6,15 @@ using MovieTracker.Services.Interfaces;
 
 namespace MovieTracker.Services;
 
-public class ActorService : IActorService
+public class ActorRepository : IActorRepository
 {
     private readonly MovieTrackerContext _context;
-    private readonly IRoleService _roleService;
+    private readonly IRoleRepository _roleRepository;
 
-    public ActorService(MovieTrackerContext context, IRoleService roleService)
+    public ActorRepository(MovieTrackerContext context, IRoleRepository roleRepository)
     {
         _context = context;
-        _roleService = roleService;
+        _roleRepository = roleRepository;
     }
 
     public async Task<List<Actor>> GetAllAsync(CancellationToken cancellationToken) => 
@@ -66,7 +66,7 @@ public class ActorService : IActorService
 
     public async Task<bool> AddRoleByRoleIdAsync(Guid actorId, Guid roleId, CancellationToken cancellationToken)
     {
-        var roleToAdd = await _roleService.GetByIdAsync(roleId, cancellationToken);
+        var roleToAdd = await _roleRepository.GetByIdAsync(roleId, cancellationToken);
 
         if (roleToAdd == null)
             return false;
