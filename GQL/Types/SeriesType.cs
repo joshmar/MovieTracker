@@ -1,5 +1,4 @@
-﻿using GraphQL.DataLoader;
-using GraphQL.Types;
+﻿using GraphQL.Types;
 using MovieTracker.Models.Entities;
 
 namespace MovieTracker.GQL.Types;
@@ -18,11 +17,11 @@ public sealed class SeriesType : ObjectGraphType<Series>
         Field(series => series.Description, nullable: true).Description("An optional description to be given to the series.");
         Field(series => series.Score, nullable: true).Description("An optional score to be given to the series.");
         
-        FieldAsync<ListGraphType<RoleType>, IDataLoaderResult<IEnumerable<Role>>>(
+        FieldAsync<ListGraphType<RoleType>>(
             name: "roles",
             description: "Roles appearing in this series.");
         
-        FieldAsync<ListGraphType<EpisodeType>, IDataLoaderResult<IEnumerable<Episode>>>(
+        FieldAsync<ListGraphType<EpisodeType>>(
             name: "episodes",
             description: "Episodes for this series.");
     }
