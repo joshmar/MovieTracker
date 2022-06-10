@@ -1,4 +1,5 @@
-﻿using GraphQL;
+﻿using System.Text.Json.Serialization;
+using GraphQL;
 using GraphQL.DataLoader;
 using GraphQL.DI;
 using GraphQL.Server;
@@ -25,7 +26,7 @@ public static class GraphQlBuilderExtensions
             })
             .AddHttpMiddleware<T>()
             .AddDefaultEndpointSelectorPolicy()
-            .AddSystemTextJson()
+            .AddSystemTextJson(options => options.ReferenceHandler = ReferenceHandler.Preserve)
             .AddErrorInfoProvider(opt => 
                 opt.ExposeExceptionStackTrace = isDevelopment)
             .AddWebSockets()
