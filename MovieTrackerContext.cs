@@ -5,11 +5,12 @@ namespace MovieTracker;
 
 public class MovieTrackerContext : DbContext
 {
-    public DbSet<Actor> Actors { get; set; }
-    public DbSet<Episode> Episodes { get; set; }
-    public DbSet<Movie> Movies { get; set; }
-    public DbSet<Role> Roles { get; set; }
-    public DbSet<Series> Series { get; set; }
+    public virtual DbSet<Actor>? Actors { get; set; }
+    public virtual DbSet<Episode>? Episodes { get; set; }
+    public virtual DbSet<Movie>? Movies { get; set; }
+    public virtual DbSet<Role>? Roles { get; set; }
+    public virtual DbSet<Series>? Series { get; set; }
+    public virtual DbSet<User>? Users { get; set; }
 
     public MovieTrackerContext(DbContextOptions<MovieTrackerContext> options)
         : base(options) { }
