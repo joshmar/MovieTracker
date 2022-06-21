@@ -24,15 +24,15 @@ public class ActorController : ControllerBase
     public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken cancellationToken) => 
         Ok(await _repository.GetByIdAsync(id, cancellationToken));
 
-    [HttpPost("create")]
+    [HttpPost]
     public async Task<IActionResult> CreateAsync(ActorModel actor, CancellationToken cancellationToken) => 
         Created($"/GetById?id={(await _repository.CreateAsync(actor, cancellationToken))?.Id}", actor);
 
-    [HttpPut("update/{id:guid}")]
+    [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateAsync(Guid id, ActorModel actor, CancellationToken cancellationToken) =>
         await _repository.UpdateAsync(id, actor, cancellationToken) ? NoContent() : NotFound();
 
-    [HttpDelete("delete/{id:guid}")]
+    [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken) =>
         await _repository.DeleteAsync(id, cancellationToken) ? NoContent() : NotFound();
 }

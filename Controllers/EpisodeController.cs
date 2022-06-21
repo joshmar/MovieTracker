@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MovieTracker.Models;
-using MovieTracker.Models.Entities;
 using MovieTracker.Services.Interfaces;
 
 namespace MovieTracker.Controllers;
@@ -24,15 +23,15 @@ public class EpisodeController : ControllerBase
     public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken cancellationToken) => 
         Ok(await _repository.GetByIdAsync(id, cancellationToken));
 
-    [HttpPost("create")]
+    [HttpPost]
     public async Task<IActionResult> CreateAsync(EpisodeModel episode, CancellationToken cancellationToken) => 
         Created($"/GetById?id={(await _repository.CreateAsync(episode, cancellationToken))?.Id}", episode);
 
-    [HttpPut("update/{id:Guid}")]
+    [HttpPut("{id:Guid}")]
     public async Task<IActionResult> UpdateAsync(Guid id, EpisodeModel episode, CancellationToken cancellationToken) =>
         await _repository.UpdateAsync(id, episode, cancellationToken) ? NoContent() : NotFound();
 
-    [HttpDelete("delete/{id:guid}")]
+    [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken) =>
         await _repository.DeleteAsync(id, cancellationToken) ? NoContent() : NotFound();
 }
