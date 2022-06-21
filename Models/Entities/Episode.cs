@@ -10,7 +10,7 @@ public class Episode
     
     //Relationships
     public Guid SeriesId { get; set; }
-    public Series Series { get; set; }
+    public virtual Series Series { get; set; }
     public virtual ICollection<Role>? Roles { get; set; }
 
     [Obsolete("EF Required", true)]
