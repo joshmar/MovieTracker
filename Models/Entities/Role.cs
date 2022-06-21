@@ -9,16 +9,16 @@ public class Role
     
     //Relationships
     public Guid? ActorId { get; set; }
-    public Actor? Actor { get; set; }
+    public virtual Actor? Actor { get; set; }
     
     public Guid? EpisodeId { get; set; }
-    public Episode? Episode { get; set; }
+    public virtual Episode? Episode { get; set; }
     
     public Guid? MovieId { get; set; }
-    public Movie? Movie { get; set; }
+    public virtual Movie? Movie { get; set; }
     
     public Guid? SeriesId { get; set; }
-    public Series? Series { get; set; }
+    public virtual Series? Series { get; set; }
 
     [Obsolete("EF Required", true)]
     public Role() { }
